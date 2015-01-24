@@ -29,6 +29,9 @@
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
+      }) 
+            .on('reset', function(){
+        location.reload();
       });
     </script>
   </body>
