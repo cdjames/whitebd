@@ -7,6 +7,11 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/master', function(req, res){
+  // res.send('<h1>Hello world</h1>');
+  res.sendFile(__dirname + '/master.html');
+});
+
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('disconnect', function(){
