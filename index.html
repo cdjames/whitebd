@@ -35,8 +35,13 @@
 
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script type="text/javascript">
-      $('#user').submit(function(){
-        
+      $('#user').submit(function(e){  
+        e.preventDefault();
+        var user;
+        $.getJSON( "user.json", function( data ) {
+          console.log(data);
+        });
+        // $('#username')
       });
     </script>
   </body>
