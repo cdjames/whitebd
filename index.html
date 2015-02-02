@@ -21,33 +21,71 @@
       <form id="user" method="post" action="/post" enctype="application/x-www-form-urlencoded">
         <input type="text" name="username" autocomplete="off" />
         <input type="text" name="password" autocomplete="off" />
-        <input type="submit">
-        // <button>Login</button>
+        <!-- <input type="submit"> -->
+        <button>Login</button>
       </form>
-      <button>Login</button>
+      <!-- <button>Login</button> -->
     </div>
     <div>
       <p><a href="/master">master</a></p>
-      // <form id="master" action="">
-      //   <input id="m_username" autocomplete="off" />
-      //   <input id="m_password" autocomplete="off" />
-      //   <button>Login</button>
-      // </form>
+      <form id="master" action="">
+        <input id="m_username" autocomplete="off" />
+        <input id="m_password" autocomplete="off" />
+        <button>Login</button>
+      </form>
     </div>
 
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/jquery.cookie.js"></script>
     <script type="text/javascript">
+    // $.urlParam = function(name){
+    //     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    //     if (results==null){
+    //        return null;
+    //     }
+    //     else{
+    //        return results[1] || 0;
+    //     }
+    // }
+    $( document ).ready(function() {
+      console.log($.cookie('login'));
+      var cookie = $.cookie('login');
+      switch(cookie) {
+        case 'success':
+          // alert('welcome');
+          window.location.replace("/user");
+          break;
+        case 'bad_password':
+          console.log('re-enter password');
+          break;
+        case 'no_user':
+          console.log('no such user');
+          break;
+      }
+    });
       // $('#user').submit(function(e){  
       //   e.preventDefault();
+      //   e.stopImmediatePropagation();
       //   var user;
-      // $('button').on('click', function(event) {
-      //   event.preventDefault();
-      //  $.get('/post', { name: "John", time: "2pm" }, function(data) {
+      //   $.post('/post', $(this).serialize(), function(data) {
       //     console.log(data);
+      //       switch(data.code) {
+      //         case 'success':
+      //             // alert('welcome');
+      //             $('body').html($(data.html).find('body').html());
+      //             break;
+      //         case 'failure':
+      //             alert('bad password. try again.');
+      //             break;
+      //         case 'no_user':
+      //             alert('no such user. try again.');
+      //             break;
+      //         default:
+      //             console.log('something else went wrong');
+      //       } 
       //   });
       // });
         
-      // });
     </script>
   </body>
 </html>
