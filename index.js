@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 // app.use(express.urlencoded()); // to support URL-encoded bodies
 var fs = require('fs');
-var obj;
+var user_file;
 
 /*app.get forwards urls to specified html page*/
 app.get('/', function(req, res){
@@ -28,8 +28,21 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + '/master.html');
 });
 app.post('/post', function(req, res){
-    res.send('<h1>Hello world</h1>' + req.body);
-    console.log("the request is...", req.body);
+    // res.send('<h1>Hello world</h1>' + req.body.username);
+    // console.log("the request is...", req.body);
+    var filename = req.body.username + '.json';
+    fs.readFile(filename, 'utf8', function (err, data) {
+      if (err) throw err;
+      user_file = JSON.parse(data);
+    });
+    // if (user_file) {
+    if (user_file && user_file.password == req.body.password) {
+      res.sendFile(__dirname + '/user.html');
+      console.log("user " + req.body.username + " logged in.");
+    } else {
+      res.send('<script>alert("login failed");</script>')
+    }
+    // }
 });
 
 io.on('connection', function(socket){
