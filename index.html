@@ -9,7 +9,7 @@
         /*position: fixed; */
         bottom: 0; width: 100%; }
       /*form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }*/
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      form button, form p { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
@@ -17,23 +17,24 @@
   </head>
   <body>
     <div>
-      <p><a href="/user">user</a></p>
+      <!-- <p><a href="/user">user</a></p> -->
       <form id="user" method="post" action="/post" enctype="application/x-www-form-urlencoded">
-        <input type="text" name="username" autocomplete="off" />
-        <input type="text" name="password" autocomplete="off" />
+        <input id="username" type="text" name="username" placeholder="username" autocomplete="off" />
+        <input id="password" type="text" name="password" placeholder="password" autocomplete="off" />
         <!-- <input type="submit"> -->
         <button>Login</button>
       </form>
+      <div id="err_message"></div>
       <!-- <button>Login</button> -->
     </div>
-    <div>
+    <!-- <div>
       <p><a href="/master">master</a></p>
       <form id="master" action="">
         <input id="m_username" autocomplete="off" />
         <input id="m_password" autocomplete="off" />
         <button>Login</button>
       </form>
-    </div>
+    </div> -->
 
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/jquery.cookie.js"></script>
@@ -49,7 +50,8 @@
     // }
     $( document ).ready(function() {
       var login_cookie = $.cookie('login'),
-          user_cookie = $.cookie('username');
+          user_cookie = $.cookie('username'),
+          err_div = $('#err_message');
       console.log("login = "+login_cookie);
       console.log("username = "+user_cookie);
      
@@ -59,13 +61,23 @@
           window.location.replace("/user?name="+user_cookie);
           break;
         case 'bad_password':
-          console.log('re-enter password');
+          console.log('wrong password');
+          err_div.text('wrong password').fadeOut(6000);
           break;
         case 'no_user':
           console.log('no such user');
+          err_div.text('no such user').fadeOut(6000);
           break;
         default:
           console.log('please sign in');
+          err_div.text('please sign in').fadeOut(6000);
+      }
+
+      if (user_cookie != null){
+        $('#username').val(user_cookie);
+        $('#password').focus();
+      } else {
+        $('#username').focus();
       }
     });
       // $('#user').submit(function(e){  

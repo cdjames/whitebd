@@ -58,7 +58,7 @@ app.post('/post', function(req, res){
     // console.log(err);
     if (err) { // can't open file
       // res.send('no_user');
-      res.cookie('login', 'no_user');
+      res.cookie('login', 'no_user', { maxAge: 300000 });
       res.redirect('/'); // back to index
       return console.error(err); // get out of the readFile
     }
@@ -67,15 +67,16 @@ app.post('/post', function(req, res){
 
     if (user_file) { // user exists
       if (user_file.password == req.body.password) { // good password
-        res.cookie('login', 'success').cookie('username', name);
+        // cookie expires in 1 day
+        res.cookie('login', 'success', { maxAge: 86400000 }).cookie('username', name, { maxAge: 86400000 });
         res.redirect('/user?name='+name); // need to specify name in url param to reach page
         console.log("user " + name + " logged in.");
       } else { // wrong password
-        res.cookie('login', 'bad_password');
+        res.cookie('login', 'bad_password', { maxAge: 300000 }); // cookie expires in 5 min
         res.redirect('/');
       }
     } else {
-      res.cookie('login', 'no_user');
+      res.cookie('login', 'no_user', { maxAge: 300000 });
       console.log("no such user.");
       // res.send('no_user');
       res.redirect('/');

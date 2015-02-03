@@ -32,7 +32,8 @@
         $('#messages').append($('<li>').text(msg));
       }) 
             .on('reset', function(){
-        location.reload();
+        // location.reload();
+        $('#messages').html('');
       });
     </script>
   </body>
