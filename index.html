@@ -48,12 +48,14 @@
     //     }
     // }
     $( document ).ready(function() {
-      console.log($.cookie('login'));
+      console.log("login = "+$.cookie('login'));
+      console.log("username = "+$.cookie('username'));
       var cookie = $.cookie('login');
+     
       switch(cookie) {
         case 'success':
           // alert('welcome');
-          window.location.replace("/user");
+          window.location.replace("/user?name=collin");
           break;
         case 'bad_password':
           console.log('re-enter password');
@@ -61,6 +63,8 @@
         case 'no_user':
           console.log('no such user');
           break;
+        default:
+          console.log('please sign in');
       }
     });
       // $('#user').submit(function(e){  

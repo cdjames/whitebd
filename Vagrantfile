@@ -66,6 +66,8 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", path: "vagrantsetup.sh"
+  config.vm.provision "shell", inline: "nodejs /vagrant/index.js",
+    run: "always"
   #   sudo apt-get update
   #   sudo apt-get install -y apache2
   # SHELL
