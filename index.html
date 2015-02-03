@@ -48,14 +48,15 @@
     //     }
     // }
     $( document ).ready(function() {
-      console.log("login = "+$.cookie('login'));
-      console.log("username = "+$.cookie('username'));
-      var cookie = $.cookie('login');
+      var login_cookie = $.cookie('login'),
+          user_cookie = $.cookie('username');
+      console.log("login = "+login_cookie);
+      console.log("username = "+user_cookie);
      
-      switch(cookie) {
+      switch(login_cookie) {
         case 'success':
           // alert('welcome');
-          window.location.replace("/user?name=collin");
+          window.location.replace("/user?name="+user_cookie);
           break;
         case 'bad_password':
           console.log('re-enter password');

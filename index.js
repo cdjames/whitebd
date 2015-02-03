@@ -22,21 +22,20 @@ app.get('/', function(req, res){
   // console.log(req);
 })
 
-  .get('/user', function(req, res){
-    var parsedUrl = url.parse(req.url, true);
-    console.log("Cookies: ", req.cookies);
-    console.log(parsedUrl.query);
-    // res.send('<h1>Hello world</h1>');
-    if (parsedUrl.query.name == req.cookies.username 
-        && req.cookies.login == 'success'){
-      res.sendFile(__dirname + '/user.html');
-    } else {
-      res.cookie('login', 'null');
-      res.redirect('/');
+  .get('/user', function(req, res){ // request for example.com/user
+    var parsedUrl = url.parse(req.url, true); // parse url param (example.com/user?param=value)
+    console.log("Cookies: ", req.cookies); // testing
+    console.log(parsedUrl.query); // testing
+    
+    if (parsedUrl.query.name == req.cookies.username // there is a param name and it matches the cookie
+        && req.cookies.login == 'success'){ // and the login was successful
+      res.sendFile(__dirname + '/user.html'); // send the user to the page
+    } else { // otherwise
+      res.cookie('login', 'null'); // set the login cookie
+      res.redirect('/'); // make them log in
     }
     
 })
-
   .get('/master', function(req, res){
     // res.send('<h1>Hello world</h1>');
     res.sendFile(__dirname + '/master.html');
@@ -49,53 +48,39 @@ app.get('/', function(req, res){
   .get('/jquery.cookie.js', function(req, res){
     res.sendFile(__dirname + '/jquery.cookie.js');
   });
-/* handle login here */
+
+/* handle login attempts here */
 app.post('/post', function(req, res){
-    var name = req.body.username,
-        user_file;
+  var name = req.body.username,
+      user_file;
+  
+  fs.readFile(name+'.json', 'utf8', function (err, data) {
+    // console.log(err);
+    if (err) { // can't open file
+      // res.send('no_user');
+      res.cookie('login', 'no_user');
+      res.redirect('/'); // back to index
+      return console.error(err); // get out of the readFile
+    }
+    // if successful
+    user_file = JSON.parse(data); // get contents of file
 
-  // d.on('error', function(err) { // handles errors from readFile
-  //   if (err.errno == 34){       // i.e. "no file found"
-  //     console.error("file "+err.path+" does not exist");     
-  //     res.send('no_user');          
-  //   }
-  // });
-
-  // d.run(function() {
-    // if (fs.exists)
-    fs.readFile(name+'.json', 'utf8', function (err, data) {
-      // console.log(err);
-      if (err) { // can't open file
-        // res.send('no_user');
-        res.cookie('login', 'no_user');
-        res.redirect('/');
-        return console.error(err);
-      }
-
-      user_file = JSON.parse(data); // get contents of file
-
-      if (user_file) { // user exists
-        if (user_file.password == req.body.password) { // good password
-          // res.sendFile(__dirname + '/user.html');
-          res.cookie('login', 'success').cookie('username', name);
-          res.redirect('/user?name='+name);
-          // res.send({code: 'success', 
-          //           html: 'html'}
-          //           );
-          console.log("user " + name + " logged in.");
-        } else { // wrong password
-          // res.send('failure');
-          res.cookie('login', 'bad_password');
-          res.redirect('/');
-        }
-      } else {
-        res.cookie('login', 'no_user');
-        console.log("no such user.");
-        // res.send('no_user');
+    if (user_file) { // user exists
+      if (user_file.password == req.body.password) { // good password
+        res.cookie('login', 'success').cookie('username', name);
+        res.redirect('/user?name='+name); // need to specify name in url param to reach page
+        console.log("user " + name + " logged in.");
+      } else { // wrong password
+        res.cookie('login', 'bad_password');
         res.redirect('/');
       }
-    });
-  // });
+    } else {
+      res.cookie('login', 'no_user');
+      console.log("no such user.");
+      // res.send('no_user');
+      res.redirect('/');
+    }
+  });
 });
 
 io.on('connection', function(socket){
