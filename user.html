@@ -15,13 +15,24 @@
   </head>
   <body> 
     <ul id="messages"></ul>
+    <ul id="teachers"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
+
     <a href='/logout'><button>Logout</button></a>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/jquery.cookie.js"></script>
     <script>
+    $( document ).ready(function() {
+      var teacher_cookie = $.cookie('teachers').split(",");
+      console.log(teacher_cookie);
+      for (var i = 0; i < teacher_cookie.length; i++) {
+        $('#teachers').append("<li><button class='teacher'>"+teacher_cookie[i]+"</button></li>");
+      }
+      // $('#teachers').append("<li><button class='teacher'>"+teacher_cookie[0]+"</button></li>");
+      // $('#teachers').append("<li><button>"+teacher_cookie[1]+"</button></li>");
       var socket = io();
       $('form').submit(function(){
         socket.emit('chat message', $('#m').val());
@@ -35,6 +46,7 @@
         // location.reload();
         $('#messages').html('');
       });
+    });
     </script>
   </body>
 </html>

@@ -1,4 +1,5 @@
 {
   "username": "collin",
-  "password": "Chanteria1"
+  "password": "Chanteria1",
+  "teachers": ["James","Tom"]
 }

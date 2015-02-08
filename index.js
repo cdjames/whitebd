@@ -21,11 +21,10 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
   // console.log(req);
 })
-
   .get('/user', function(req, res){ // request for example.com/user
     var parsedUrl = url.parse(req.url, true); // parse url param (example.com/user?param=value)
-    console.log("Cookies: ", req.cookies); // testing
-    console.log(parsedUrl.query); // testing
+    // console.log("Cookies: ", req.cookies); // testing
+    // console.log(parsedUrl.query); // testing
     
     if (parsedUrl.query.name == req.cookies.username // there is a param name and it matches the cookie
         && req.cookies.login == 'success'){ // and the login was successful
@@ -33,8 +32,7 @@ app.get('/', function(req, res){
     } else { // otherwise
       res.cookie('login', 'null'); // set the login cookie
       res.redirect('/'); // make them log in
-    }
-    
+    }   
 })
   .get('/master', function(req, res){
     // res.send('<h1>Hello world</h1>');
@@ -64,11 +62,13 @@ app.post('/post', function(req, res){
     }
     // if successful
     user_file = JSON.parse(data); // get contents of file
-
+    console.log("teachers are ",user_file.teachers.toString());
     if (user_file) { // user exists
       if (user_file.password == req.body.password) { // good password
         // cookie expires in 1 day
-        res.cookie('login', 'success', { maxAge: 86400000 }).cookie('username', name, { maxAge: 86400000 });
+        res.cookie('login', 'success', { maxAge: 86400000 })
+            .cookie('username', name, { maxAge: 86400000 })
+            .cookie('teachers',user_file.teachers.toString(),{ maxAge: 86400000 });
         res.redirect('/user?name='+name); // need to specify name in url param to reach page
         console.log("user " + name + " logged in.");
       } else { // wrong password
