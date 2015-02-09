@@ -51,14 +51,20 @@
     $( document ).ready(function() {
       var login_cookie = $.cookie('login'),
           user_cookie = $.cookie('username'),
+          teacher_cookie = $.cookie('teachers'),
           err_div = $('#err_message');
       console.log("login = "+login_cookie);
       console.log("username = "+user_cookie);
+      console.log("teachers = "+teacher_cookie);
      
       switch(login_cookie) {
         case 'success':
           // alert('welcome');
-          window.location.replace("/user?name="+user_cookie);
+          if (teacher_cookie != "true") {
+            window.location.replace("/user?name="+user_cookie);
+          } else {
+            window.location.replace("/teacher?name="+user_cookie);
+          }
           break;
         case 'bad_password':
           console.log('wrong password');
