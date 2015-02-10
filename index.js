@@ -116,11 +116,21 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
     console.log('user disconnected');
   })
-        .on('chat message', function(msg){
+  .on('chat message', function(msg){
     io.emit('chat message', msg);
   })
-        .on('reset', function(){
+  .on('reset', function(){
     io.emit('reset');
+  })
+  .on('student in', function(data){
+    console.log(data.teacher + " from line 126");
+    io.emit(data.teacher, data.username); // emit a message with the name of "teacher"
+  })
+  .on('student out', function(data){
+    console.log(data.username + " from line 130");
+    var teacher = 'student out-'+data.teacher;
+    console.log('teacher variable is '+teacher);
+    io.emit(teacher, data.username); // emit a message with the name of "student"
   });
 });
 

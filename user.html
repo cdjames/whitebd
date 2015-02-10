@@ -16,6 +16,7 @@
   <body> 
     <ul id="messages"></ul>
     <ul id="teachers"></ul>
+    <ul id="switch"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -26,11 +27,18 @@
     <script src="/jquery.cookie.js"></script>
     <script>
     $( document ).ready(function() {
-      var teacher_cookie = $.cookie('teachers').split(",");
-      console.log(teacher_cookie);
-      for (var i = 0; i < teacher_cookie.length; i++) {
-        $('#teachers').append("<li><button class='teacher'>"+teacher_cookie[i]+"</button></li>");
+      function appendTeachers() {
+        for (var i = 0; i < teacher_cookie.length; i++) {
+          $('#teachers').append($("<li><button class='teacher'>"+teacher_cookie[i]+"</button></li>"));
+        }
       }
+      var teacher_cookie = $.cookie('teachers').split(","),
+          current_teacher;
+      console.log(teacher_cookie);
+      // for (var i = 0; i < teacher_cookie.length; i++) {
+      //   $('#teachers').append("<li><button class='teacher'>"+teacher_cookie[i]+"</button></li>");
+      // }
+      appendTeachers();
       // $('#teachers').append("<li><button class='teacher'>"+teacher_cookie[0]+"</button></li>");
       // $('#teachers').append("<li><button>"+teacher_cookie[1]+"</button></li>");
       var socket = io();
@@ -38,6 +46,21 @@
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
+      });
+      $('#teachers').bind('click', '.teacher', function(event) { // need bind to find it
+        event.preventDefault();
+        console.log($(event.target).text());
+        current_teacher = $(event.target).text();
+        socket.emit('student in', {"username":$.cookie('username'),"teacher":$(event.target).text()});
+        $('#teachers').html("");
+        $('#switch').append($("<li><button id='switch_teacher'>Different Teacher</button></li>"));
+      });
+      $('#switch').bind('click.switch', '#switch_teacher',function(event) {
+        console.log($(event.target).text());
+        event.preventDefault();
+        socket.emit('student out', {"username":$.cookie('username'),"teacher":current_teacher});
+        $('#switch').html("");
+        appendTeachers();
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));

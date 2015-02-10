@@ -22,8 +22,12 @@
     <button id="reset">Reset</button>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/jquery.cookie.js"></script>
     <script>
-      var socket = io();
+      var socket = io(),
+          username = $.cookie('username'),
+          teacher = 'student out-'+username;
+      console.log('teacher variable is '+teacher);
       $('#reset').on('click', function(event) {
         event.preventDefault();
         socket.emit('reset');
@@ -40,6 +44,11 @@
       }).on('reset', function(){
         // location.reload();
         $('#messages').html('');
+      }).on(username, function(student){
+        console.log(student+" logged in");
+        // $('#messages').html('');
+      }).on(teacher, function(student){
+        console.log(student+" logged out");
       });
     </script>
   </body>
