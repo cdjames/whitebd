@@ -14,6 +14,8 @@
     </style>
   </head>
   <body>
+    <ul id="games"></ul>
+    <ul id="switch"></ul>
     <ul id="messages"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
@@ -24,10 +26,19 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/jquery.cookie.js"></script>
     <script>
+      function appendGames() {
+        for (var i = 0; i < games_cookie.length; i++) {
+          $('#games').append($("<li><button class='game'>"+games_cookie[i]+"</button></li>"));
+        }
+      }
       var socket = io(),
           username = $.cookie('username'),
-          teacher = 'student out-'+username;
+          teacher = 'student out-'+username,
+          games_cookie = $.cookie('games').split(","),
+          current_game;
       console.log('teacher variable is '+teacher);
+      // console.log("games are "+games);
+      appendGames();
       $('#reset').on('click', function(event) {
         event.preventDefault();
         socket.emit('reset');
@@ -38,6 +49,14 @@
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
+      });
+      $('#games').bind('click', '.game', function(event) { // need bind to find it
+        event.preventDefault();
+        console.log($(event.target).text());
+        current_game = $(event.target).text();
+        socket.emit('game on', {"teacher":$.cookie('username'),"game":$(event.target).text()});
+        $('#games').html("");
+        $('#switch').append($("<li><button id='switch_teacher'>End Game</button></li>"));
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));

@@ -1,0 +1,33 @@
+{
+	"fungame": 
+		{
+			"item1": 
+				{
+					"question": "When is Cloud's birthday?",
+					"choices": ["March 13", "November 12", "October 6", "September 9"],
+					"answer": "September 9"
+				},
+			"item2": 
+				{
+					"question": "When is Yasuko's birthday?",
+					"choices": ["March 13", "November 12", "October 6", "September 9"],
+					"answer": "October 6"
+				}
+		},
+	"fungame2": 
+		{
+			"item1": 
+				{
+					"question": "When is Cloud's birthday?",
+					"choices": ["March 13", "November 12", "October 6", "September 9"],
+					"answer": "September 9"
+				},
+			"item2": 
+				{
+					"question": "When is Yasuko's birthday?",
+					"choices": ["March 13", "November 12", "October 6", "September 9"],
+					"answer": "October 6"
+				}
+		}
+
+}

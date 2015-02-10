@@ -82,7 +82,8 @@ app.post('/post', function(req, res){
     // if successful
     user_file = JSON.parse(data); // get contents of file
     console.log("teachers are ",user_file.teachers.toString());
-    console.log("user_file.teachers is ",typeof user_file.teachers);
+    console.log("games are ",user_file.game_names.toString());
+    // console.log("user_file.teachers is ",typeof user_file.teachers);
     if (user_file) { // user exists
       if (user_file.password == req.body.password) { // good password
         // cookie expires in 1 day
@@ -93,6 +94,7 @@ app.post('/post', function(req, res){
         if (user_file.teachers != true){ // if not a teacher
           res.redirect('/user?name='+name); // need to specify name in url param to reach page
         } else { // if a teacher
+          res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
           res.redirect('/teacher?name='+name); // need to specify name in url param to reach page
         }
         
@@ -131,6 +133,11 @@ io.on('connection', function(socket){
     var teacher = 'student out-'+data.teacher;
     console.log('teacher variable is '+teacher);
     io.emit(teacher, data.username); // emit a message with the name of "student"
+  })
+  .on('game on', function(data){
+    console.log(data.teacher + " from line 138");
+    console.log(data.game + " from line 139");
+    // io.emit('game on-'+data.teacher, game_contents); // emit a message with the name of "teacher"
   });
 });
 
