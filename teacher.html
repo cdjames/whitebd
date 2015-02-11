@@ -53,7 +53,7 @@
         $('#m').val('');
         return false;
       });
-      $('#games').bind('click', '.game', function(event) { // need bind to find it
+      $('#games').on('click', '.game', function(event) { // need bind to find it
         event.preventDefault();
         console.log($(event.target).text());
         current_game = $(event.target).text();

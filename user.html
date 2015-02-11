@@ -50,7 +50,7 @@
         $('#m').val('');
         return false;
       });
-      $('#teachers').bind('click', '.teacher', function(event) { // need bind to find it
+      $('#teachers').on('click', '.teacher', function(event) { // first selector must be static
         event.preventDefault();
         // console.log($(event.target).text());
         current_teacher = $(event.target).text();
@@ -67,12 +67,16 @@
           current_item++;
         });
       });
-      $('#switch').bind('click.switch', '#switch_teacher',function(event) {
+      $('#switch').on('click.switch', '#switch_teacher',function(event) {
         console.log($(event.target).text());
         event.preventDefault();
         socket.emit('student out', {"username":$.cookie('username'),"teacher":current_teacher});
         $('#switch').html("");
         appendTeachers();
+      });
+      $('#the_game').on('click', '.choices button', function(event) {
+        event.preventDefault();
+        console.log('clicked button');
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
