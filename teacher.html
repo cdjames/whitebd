@@ -63,11 +63,16 @@
       }).on('reset', function(){
         // location.reload();
         $('#messages').html('');
-      }).on(username, function(student){
+      }).on('student in-'+username, function(student){
         console.log(student+" logged in");
         // $('#messages').html('');
       }).on(teacher, function(student){
         console.log(student+" logged out");
+      }).on('game on-'+username, function(the_game){
+        console.log(the_game);
+        for (var i = 1; i <= Object.keys(the_game).length; i++) {
+          console.log(the_game['item'+i]);
+        }
       });
     </script>
   </body>

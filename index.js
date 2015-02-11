@@ -126,7 +126,7 @@ io.on('connection', function(socket){
   })
   .on('student in', function(data){
     console.log(data.teacher + " from line 126");
-    io.emit(data.teacher, data.username); // emit a message with the name of "teacher"
+    io.emit('student in-'+data.teacher, data.username); // emit a message with the name of "teacher"
   })
   .on('student out', function(data){
     console.log(data.username + " from line 130");
@@ -137,6 +137,50 @@ io.on('connection', function(socket){
   .on('game on', function(data){
     console.log(data.teacher + " from line 138");
     console.log(data.game + " from line 139");
+    var game = data.game,
+        teacher = data.teacher;
+    fs.readFile('games.json', 'utf8', function (err, file_data) {
+      // console.log(JSON.parse(data));
+      if (err) { // can't open file
+        io.emit('game error-'+teacher);
+        return console.error(err); // get out of the readFile
+      }
+      // if successful
+      var game_data = JSON.parse(file_data),
+          the_game = game_data[game]; // get contents of file
+      // console.log(Object.keys(the_game).length); // get length of object (# of questions)
+      // for (var i = 1; i <= Object.keys(the_game).length; i++) {
+      //   // console.log(the_game['item'+i]);
+      // }
+      io.emit('game on-'+teacher, game_data[game]);
+      // console.log(game);
+      // console.log("games are ",user_file.game_names.toString());
+      // // console.log("user_file.teachers is ",typeof user_file.teachers);
+      // if (user_file) { // user exists
+      //   if (user_file.password == req.body.password) { // good password
+      //     // cookie expires in 1 day
+      //     res.cookie('login', 'success', { maxAge: 86400000 })
+      //         .cookie('username', name, { maxAge: 86400000 })
+      //         .cookie('teachers', user_file.teachers.toString(),{ maxAge: 86400000 });
+      //     console.log("user " + name + " logged in.");
+      //     if (user_file.teachers != true){ // if not a teacher
+      //       res.redirect('/user?name='+name); // need to specify name in url param to reach page
+      //     } else { // if a teacher
+      //       res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
+      //       res.redirect('/teacher?name='+name); // need to specify name in url param to reach page
+      //     }
+          
+      //   } else { // wrong password
+      //     res.cookie('login', 'bad_password', { maxAge: 300000 }); // cookie expires in 5 min
+      //     res.redirect('/');
+      //   }
+      // } else {
+      //   res.cookie('login', 'no_user', { maxAge: 300000 });
+      //   console.log("no such user.");
+      //   // res.send('no_user');
+      //   res.redirect('/');
+      // }
+    });
     // io.emit('game on-'+data.teacher, game_contents); // emit a message with the name of "teacher"
   });
 });
