@@ -82,7 +82,6 @@ app.post('/post', function(req, res){
     // if successful
     user_file = JSON.parse(data); // get contents of file
     console.log("teachers are ",user_file.teachers.toString());
-    console.log("games are ",user_file.game_names.toString());
     // console.log("user_file.teachers is ",typeof user_file.teachers);
     if (user_file) { // user exists
       if (user_file.password == req.body.password) { // good password
@@ -94,6 +93,7 @@ app.post('/post', function(req, res){
         if (user_file.teachers != true){ // if not a teacher
           res.redirect('/user?name='+name); // need to specify name in url param to reach page
         } else { // if a teacher
+          console.log("games are ",user_file.game_names.toString());
           res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
           res.redirect('/teacher?name='+name); // need to specify name in url param to reach page
         }
@@ -138,7 +138,9 @@ io.on('connection', function(socket){
     console.log(data.teacher + " from line 138");
     console.log(data.game + " from line 139");
     var game = data.game,
-        teacher = data.teacher;
+        teacher = data.teacher,
+        game_on = 'game_on_'+teacher;
+    console.log('game_on = '+game_on);
     fs.readFile('games.json', 'utf8', function (err, file_data) {
       // console.log(JSON.parse(data));
       if (err) { // can't open file
@@ -148,25 +150,27 @@ io.on('connection', function(socket){
       // if successful
       var game_data = JSON.parse(file_data),
           the_game = game_data[game],
+          num_items = Object.keys(the_game),
           the_html=
             "<div id='"+game+"'>"; // get contents of file
-      console.log(the_html); 
-      for (var i = 1, the_item; i <= Object.keys(the_game).length; i++) {
-        the_item = the_game['item'+i];
-        // console.log(the_game['item'+i]);
-        the_html += "<div id='item"+i+"'>"
+      // console.log(the_game[num_items[1]]); 
+      for (var i = 0, the_item; i < num_items.length; i++) {
+        the_item = the_game[num_items[i]];
+        // console.log(the_item);
+        the_html += "<div id='"+num_items[i]+"' style='display: none'>"
                   +   "<div class='question'><ul><li>"+the_item.question+"</li></ul></div>"
                   +   "<div class='choices'><ol>";
-        for (var i = 0; i < the_item.choices.length; i++) {
-          the_html += "<li><button>"+the_item.choices[i]+"</button></li>";
+        for (var x = 0; x < the_item.choices.length; x++) {
+          the_html += "<li><button>"+the_item.choices[x]+"</button></li>";
         }
         the_html += "</ol></div>"
                   + "<div class='answer' style='display: none'><ul><li>"+the_item.answer+"</li></ul></div>"
                   + "</div>"
-                  + "<div id='num_items' data_src='"+Object.keys(the_game).length+"'></div>";
+                  + "<div id='num_items' style='display: none' data_src='"+num_items.length+"'></div>";
       }
       console.log(the_html);
-      io.emit('game on-'+teacher, the_html); // send the game to correct users
+      the_html += "</div>";
+      io.emit(game_on, {"html":the_html, "items":num_items}); // send the game to correct users
     });
   });
 });

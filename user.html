@@ -17,6 +17,7 @@
     <ul id="messages"></ul>
     <ul id="teachers"></ul>
     <ul id="switch"></ul>
+    <div id="the_game"></div>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -33,7 +34,9 @@
         }
       }
       var teacher_cookie = $.cookie('teachers').split(","),
-          current_teacher;
+          current_teacher,
+          current_item=0,
+          game_on;
       console.log(teacher_cookie);
       // for (var i = 0; i < teacher_cookie.length; i++) {
       //   $('#teachers').append("<li><button class='teacher'>"+teacher_cookie[i]+"</button></li>");
@@ -49,11 +52,20 @@
       });
       $('#teachers').bind('click', '.teacher', function(event) { // need bind to find it
         event.preventDefault();
-        console.log($(event.target).text());
+        // console.log($(event.target).text());
         current_teacher = $(event.target).text();
+        game_on='game_on_'+current_teacher;
+        console.log('game_on = '+game_on);
+        // console.log('game on-'+current_teacher);
         socket.emit('student in', {"username":$.cookie('username'),"teacher":$(event.target).text()});
         $('#teachers').html("");
         $('#switch').append($("<li><button id='switch_teacher'>Different Teacher</button></li>"));
+        socket.on(game_on, function(the_game){
+          console.log('game on-'+current_teacher);
+          $('#the_game').html(the_game.html);
+          $('#'+the_game.items[0]).show();
+          current_item++;
+        });
       });
       $('#switch').bind('click.switch', '#switch_teacher',function(event) {
         console.log($(event.target).text());
@@ -64,11 +76,17 @@
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
-      }) 
-            .on('reset', function(){
+      })
+      .on('reset', function(){
         // location.reload();
         $('#messages').html('');
       });
+      // .on(game_on, function(the_game){
+      //   console.log('game on-'+current_teacher);
+      //   $('#the_game').html(the_game.html);
+      //   $('#'+the_game.items[0]).show();
+      //   current_item++;
+      // });
     });
     </script>
   </body>

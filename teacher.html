@@ -37,8 +37,9 @@
           username = $.cookie('username'),
           teacher = 'student out-'+username,
           games_cookie = $.cookie('games').split(","),
-          current_game;
-      console.log('teacher variable is '+teacher);
+          current_game,
+          current_item=0,
+          game_on='game_on_'+username;
       // console.log("games are "+games);
       appendGames();
       $('#reset').on('click', function(event) {
@@ -70,9 +71,11 @@
         // $('#messages').html('');
       }).on(teacher, function(student){
         console.log(student+" logged out");
-      }).on('game on-'+username, function(the_game){
-        console.log(the_game);
-        $('#the_game').html(the_game);
+      }).on(game_on, function(the_game){
+        console.log('game on-'+username);
+        $('#the_game').html(the_game.html);
+        $('#'+the_game.items[0]).show();
+        current_item++;
       });
     </script>
   </body>
