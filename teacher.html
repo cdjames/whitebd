@@ -11,12 +11,14 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      .question {color: red;}
     </style>
   </head>
   <body>
     <ul id="games"></ul>
     <ul id="switch"></ul>
     <ul id="messages"></ul>
+    <div id="the_game"></div>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -70,9 +72,7 @@
         console.log(student+" logged out");
       }).on('game on-'+username, function(the_game){
         console.log(the_game);
-        for (var i = 1; i <= Object.keys(the_game).length; i++) {
-          console.log(the_game['item'+i]);
-        }
+        $('#the_game').html(the_game);
       });
     </script>
   </body>

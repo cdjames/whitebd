@@ -147,41 +147,27 @@ io.on('connection', function(socket){
       }
       // if successful
       var game_data = JSON.parse(file_data),
-          the_game = game_data[game]; // get contents of file
-      // console.log(Object.keys(the_game).length); // get length of object (# of questions)
-      // for (var i = 1; i <= Object.keys(the_game).length; i++) {
-      //   // console.log(the_game['item'+i]);
-      // }
-      io.emit('game on-'+teacher, game_data[game]);
-      // console.log(game);
-      // console.log("games are ",user_file.game_names.toString());
-      // // console.log("user_file.teachers is ",typeof user_file.teachers);
-      // if (user_file) { // user exists
-      //   if (user_file.password == req.body.password) { // good password
-      //     // cookie expires in 1 day
-      //     res.cookie('login', 'success', { maxAge: 86400000 })
-      //         .cookie('username', name, { maxAge: 86400000 })
-      //         .cookie('teachers', user_file.teachers.toString(),{ maxAge: 86400000 });
-      //     console.log("user " + name + " logged in.");
-      //     if (user_file.teachers != true){ // if not a teacher
-      //       res.redirect('/user?name='+name); // need to specify name in url param to reach page
-      //     } else { // if a teacher
-      //       res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
-      //       res.redirect('/teacher?name='+name); // need to specify name in url param to reach page
-      //     }
-          
-      //   } else { // wrong password
-      //     res.cookie('login', 'bad_password', { maxAge: 300000 }); // cookie expires in 5 min
-      //     res.redirect('/');
-      //   }
-      // } else {
-      //   res.cookie('login', 'no_user', { maxAge: 300000 });
-      //   console.log("no such user.");
-      //   // res.send('no_user');
-      //   res.redirect('/');
-      // }
+          the_game = game_data[game],
+          the_html=
+            "<div id='"+game+"'>"; // get contents of file
+      console.log(the_html); 
+      for (var i = 1, the_item; i <= Object.keys(the_game).length; i++) {
+        the_item = the_game['item'+i];
+        // console.log(the_game['item'+i]);
+        the_html += "<div id='item"+i+"'>"
+                  +   "<div class='question'><ul><li>"+the_item.question+"</li></ul></div>"
+                  +   "<div class='choices'><ol>";
+        for (var i = 0; i < the_item.choices.length; i++) {
+          the_html += "<li><button>"+the_item.choices[i]+"</button></li>";
+        }
+        the_html += "</ol></div>"
+                  + "<div class='answer' style='display: none'><ul><li>"+the_item.answer+"</li></ul></div>"
+                  + "</div>"
+                  + "<div id='num_items' data_src='"+Object.keys(the_game).length+"'></div>";
+      }
+      console.log(the_html);
+      io.emit('game on-'+teacher, the_html); // send the game to correct users
     });
-    // io.emit('game on-'+data.teacher, game_contents); // emit a message with the name of "teacher"
   });
 });
 
