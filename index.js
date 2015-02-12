@@ -121,8 +121,8 @@ io.on('connection', function(socket){
   .on('chat message', function(msg){
     io.emit('chat message', msg);
   })
-  .on('reset', function(){
-    io.emit('reset');
+  .on('reset', function(teacher){
+    io.emit('reset'+teacher);
   })
   .on('student in', function(data){
     console.log(data.teacher + " from line 126");

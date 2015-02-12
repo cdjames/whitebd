@@ -65,9 +65,12 @@
           $('#the_game').html(the_game.html);
           $('#'+the_game.items[0]).show();
           current_item++;
+        })
+        .on('reset'+current_teacher, function(){
+          $('#messages').html('');
         });
       });
-      $('#switch').on('click.switch', '#switch_teacher',function(event) {
+      $('#switch').on('click', '#switch_teacher',function(event) {
         console.log($(event.target).text());
         event.preventDefault();
         socket.emit('student out', {"username":$.cookie('username'),"teacher":current_teacher});
@@ -80,10 +83,6 @@
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
-      })
-      .on('reset', function(){
-        // location.reload();
-        $('#messages').html('');
       });
       // .on(game_on, function(the_game){
       //   console.log('game on-'+current_teacher);

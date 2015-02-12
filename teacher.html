@@ -19,6 +19,7 @@
     <ul id="switch"></ul>
     <ul id="messages"></ul>
     <div id="the_game"></div>
+    <div id="users"><ul><li>users</li></ul></div>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -44,7 +45,7 @@
       appendGames();
       $('#reset').on('click', function(event) {
         event.preventDefault();
-        socket.emit('reset');
+        socket.emit('reset', username);
         $('#m').val('').focus();
         return false;
       });
@@ -57,7 +58,7 @@
         event.preventDefault();
         console.log($(event.target).text());
         current_game = $(event.target).text();
-        socket.emit('game on', {"teacher":$.cookie('username'),"game":$(event.target).text()});
+        socket.emit('game on', {"teacher":username,"game":$(event.target).text()});
         $('#games').html("");
         $('#switch').append($("<li><button id='switch_teacher'>End Game</button></li>"));
       })
@@ -71,14 +72,18 @@
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
-      }).on('reset', function(){
+      }).on('reset'+username, function(){
         // location.reload();
         $('#messages').html('');
       }).on('student in-'+username, function(student){
         console.log(student+" logged in");
+        $('#users ul').append($("<li id='"+student+"'><ul><li class='student'>"+student+"</li><li class='score'></li></ul></li>"));
         // $('#messages').html('');
-      }).on(teacher, function(student){
+      })
+      .on('student out-'+username, function(student){
         console.log(student+" logged out");
+        $('#users ul').find('#'+student).remove();
+        // $('#messages').html('');
       }).on(game_on, function(the_game){
         console.log('game on-'+username);
         $('#the_game').html(the_game.html);
