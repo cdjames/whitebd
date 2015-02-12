@@ -134,7 +134,7 @@ io.on('connection', function(socket){
     console.log('teacher variable is '+teacher);
     io.emit(teacher, data.username); // emit a message with the name of "student"
   })
-  .on('game on', function(data){
+  .on('game on', function(data){ // sent from teacher
     console.log(data.teacher + " from line 138");
     console.log(data.game + " from line 139");
     var game = data.game,
@@ -164,13 +164,12 @@ io.on('connection', function(socket){
           the_html += "<li><button>"+the_item.choices[x]+"</button></li>";
         }
         the_html += "</ol></div>"
-                  + "<div class='answer' style='display: none'><ul><li>"+the_item.answer+"</li></ul></div>"
-                  + "</div>"
-                  + "<div id='num_items' style='display: none' data_src='"+num_items.length+"'></div>";
+                  + "<div class='answer' style='display: none' data_src='"+the_item.answer+"'><ul><li>The Answer</li></ul></div>"
+                  + "</div>";
       }
-      console.log(the_html);
-      the_html += "</div>";
-      io.emit(game_on, {"html":the_html, "items":num_items}); // send the game to correct users
+      // console.log(the_html);
+      the_html += "<div id='num_items' style='display: none' data_src='"+num_items.length+"'></div></div>";
+      io.emit(game_on, {"html":the_html, "items":num_items}); // send the game to users of sending teacher
     });
   });
 });
