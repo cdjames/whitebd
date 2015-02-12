@@ -164,11 +164,11 @@ io.on('connection', function(socket){
           the_html += "<li><button>"+the_item.choices[x]+"</button></li>";
         }
         the_html += "</ol></div>"
-                  + "<div class='answer' style='display: none' data_src='"+the_item.answer+"'><ul><li>The Answer</li></ul></div>"
+                  + "<div class='answer' style='display: none' data-src='"+the_item.answer+"'><ul><li><button>The Answer</button></li></ul></div>"
                   + "</div>";
       }
       // console.log(the_html);
-      the_html += "<div id='num_items' style='display: none' data_src='"+num_items.length+"'></div></div>";
+      the_html += "<div id='num_items' style='display: none' data-src='"+num_items.length+"'></div></div>";
       io.emit(game_on, {"html":the_html, "items":num_items}); // send the game to users of sending teacher
     });
   });

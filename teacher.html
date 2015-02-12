@@ -60,6 +60,14 @@
         socket.emit('game on', {"teacher":$.cookie('username'),"game":$(event.target).text()});
         $('#games').html("");
         $('#switch').append($("<li><button id='switch_teacher'>End Game</button></li>"));
+      })
+      $('#the_game').on('click', '.answer button', function(event) {
+        event.preventDefault();
+        var this_thing = $(this);
+        // console.log(this_thing.parents('.answer'));
+        this_thing.parents('.answer').siblings('.choices').hide();
+        this_thing.parents('.answer').siblings('.question').hide();
+        this_thing.text(this_thing.parents('.answer').attr('data-src'));
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
