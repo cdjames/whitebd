@@ -34,6 +34,7 @@
           $('#games').append($("<li><button class='game'>"+games_cookie[i]+"</button></li>"));
         }
       }
+      
       var socket = io(),
           username = $.cookie('username'),
           teacher = 'student out-'+username,
@@ -43,17 +44,20 @@
           game_on='game_on_'+username;
       // console.log("games are "+games);
       appendGames();
+      
       $('#reset').on('click', function(event) {
         event.preventDefault();
         socket.emit('reset', username);
         $('#m').val('').focus();
         return false;
       });
+      
       $('form').submit(function(){
         socket.emit('chat message', $('#m').val());
         $('#m').val('');
         return false;
       });
+      
       $('#games').on('click', '.game', function(event) { // need bind to find it
         event.preventDefault();
         console.log($(event.target).text());
@@ -61,21 +65,26 @@
         socket.emit('game on', {"teacher":username,"game":$(event.target).text()});
         $('#games').html("");
         $('#switch').append($("<li><button id='switch_teacher'>End Game</button></li>"));
-      })
+      });
+      
       $('#the_game').on('click', '.answer button', function(event) {
         event.preventDefault();
         var this_thing = $(this);
         // console.log(this_thing.parents('.answer'));
+        socket.emit('give answer', {"teacher":username,"game":$(event.target).text()});
         this_thing.parents('.answer').siblings('.choices').hide();
         this_thing.parents('.answer').siblings('.question').hide();
         this_thing.text(this_thing.parents('.answer').attr('data-src'));
       });
+      
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
-      }).on('reset'+username, function(){
+      })
+      .on('reset'+username, function(){
         // location.reload();
         $('#messages').html('');
-      }).on('student in-'+username, function(student){
+      })
+      .on('student in-'+username, function(student){
         console.log(student+" logged in");
         $('#users ul').append($("<li id='"+student+"'>"
               +"<ul><li class='student'>"+student+"</li><li class='score'>"
@@ -93,10 +102,12 @@
           var correct_tally = $('#'+data.username).find('.correct').text() || 0;
           correct_tally++;
           $('#'+data.username).find('.correct').text(correct_tally);
+          socket.emit('answer status', {'status':'correct', 'username': data.username});
         } else {
           var incorrect_tally = $('#'+data.username).find('.correct').text() || 0;
           incorrect_tally++;
           $('#'+data.username).find('.incorrect').text(incorrect_tally);
+          socket.emit('answer status', {'status':'incorrect', 'username': data.username});
         }
         // 
         // $('#users ul').find('#'+student).remove();

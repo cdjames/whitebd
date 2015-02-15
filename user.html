@@ -60,10 +60,11 @@
         socket.emit('student in', {"username":$.cookie('username'),"teacher":$(event.target).text()});
         $('#teachers').html("");
         $('#switch').append($("<li><button id='switch_teacher'>Different Teacher</button></li>"));
+        
         socket.on(game_on, function(the_game){
           console.log('game on-'+current_teacher);
           $('#the_game').html(the_game.html);
-          $('#'+the_game.items[0]).show();
+          $('#'+the_game.items[0]).show().addClass('current_item');
           current_item++;
         })
         .on('reset'+current_teacher, function(){
@@ -79,9 +80,24 @@
       });
       $('#the_game').on('click.answer', '.choices button', function(event) {
         event.preventDefault();
+        var this_thing = $(this);
         $(this).parent('li').siblings().hide();
+        
         socket.emit('answer out', {"answer":$(this).text(), "teacher":current_teacher, "username":$.cookie('username')});
+        
         $('#the_game').off('click.answer');
+        
+        socket.on('answer status-'+$.cookie('username'), function(status) {
+          console.log(this_thing.text());
+          if (status == "correct") {
+            // $('.current_item')
+            // PLAY WINNING SOUND HERE
+            this_thing.css('color', 'green');
+          } else {
+            // PLAY LOSING SOUND HERE
+            this_thing.css('color', 'red');
+          }
+        })
         // $(this).siblings('button').hide();
       });
       socket.on('chat message', function(msg){
