@@ -77,18 +77,37 @@
         $('#messages').html('');
       }).on('student in-'+username, function(student){
         console.log(student+" logged in");
-        $('#users ul').append($("<li id='"+student+"'><ul><li class='student'>"+student+"</li><li class='score'></li></ul></li>"));
+        $('#users ul').append($("<li id='"+student+"'>"
+              +"<ul><li class='student'>"+student+"</li><li class='score'>"
+              +"<ul><li class='correct'>0</li><li class='incorrect'>0</li></ul></li></ul></li>"));
         // $('#messages').html('');
       })
       .on('student out-'+username, function(student){
         console.log(student+" logged out");
         $('#users ul').find('#'+student).remove();
         // $('#messages').html('');
-      }).on(game_on, function(the_game){
+      })
+      .on('answer out-'+username, function(data){
+        if (data.answer == $('.current_item').find('.answer').attr('data-src')){
+          console.log(data.username+" answered correctly "+data.answer);
+          var correct_tally = $('#'+data.username).find('.correct').text() || 0;
+          correct_tally++;
+          $('#'+data.username).find('.correct').text(correct_tally);
+        } else {
+          var incorrect_tally = $('#'+data.username).find('.correct').text() || 0;
+          incorrect_tally++;
+          $('#'+data.username).find('.incorrect').text(incorrect_tally);
+        }
+        // 
+        // $('#users ul').find('#'+student).remove();
+        // $('#messages').html('');
+      })
+      .on(game_on, function(the_game){
         console.log('game on-'+username);
         $('#the_game').html(the_game.html);
         $('#'+the_game.items[0]).show();
         $('#'+the_game.items[0]).find('.answer').show();
+        $('#'+the_game.items[0]).addClass('current_item');
         current_item++;
       });
     </script>

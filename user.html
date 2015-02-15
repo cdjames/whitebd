@@ -77,9 +77,12 @@
         $('#switch').html("");
         appendTeachers();
       });
-      $('#the_game').on('click', '.choices button', function(event) {
+      $('#the_game').on('click.answer', '.choices button', function(event) {
         event.preventDefault();
-        console.log('clicked button');
+        $(this).parent('li').siblings().hide();
+        socket.emit('answer out', {"answer":$(this).text(), "teacher":current_teacher, "username":$.cookie('username')});
+        $('#the_game').off('click.answer');
+        // $(this).siblings('button').hide();
       });
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));

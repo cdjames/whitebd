@@ -134,6 +134,12 @@ io.on('connection', function(socket){
     console.log('teacher variable is '+teacher);
     io.emit(teacher, data.username); // emit a message with the name of "student"
   })
+  .on('answer out', function(data){
+    console.log(data.answer + " from line 138");
+    // var teacher = 'answer out-'+data.teacher;
+    // console.log('teacher variable is '+teacher);
+    io.emit('answer out-'+data.teacher, {"answer":data.answer,"username":data.username}); // emit a message with the name of "student"
+  })
   .on('game on', function(data){ // sent from teacher
     console.log(data.teacher + " from line 138");
     console.log(data.game + " from line 139");
