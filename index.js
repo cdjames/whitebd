@@ -187,11 +187,18 @@ io.on('connection', function(socket){
     });
   })
   .on('give answer', function(data){
-      console.log(data + " from line 189");
+      console.log(data + " from line 190");
       console.log('give answer-'+data.teacher);
       // var teacher = 'answer out-'+data.teacher;
       // console.log('teacher variable is '+teacher);
       io.emit('give answer-'+data.teacher); // emit a message with the name of "give answer-teacher"
+  })
+  .on('next item', function(data){
+    console.log('next item-'+data.teacher);
+    io.emit('next item-'+data.teacher, data.item);
+  })
+  .on('game over', function(data){
+    io.emit('game over-'+data.teacher);
   });
 });
 

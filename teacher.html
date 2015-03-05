@@ -43,7 +43,9 @@
           the_game,
           current_game,
           current_item=0,
-          game_on='game_on_'+username;
+          game_on='game_on_'+username,
+          correct_tally,
+          incorrect_tally;
       // console.log("games are "+games);
       appendGames();
       
@@ -94,9 +96,14 @@
           var this_item = $('#'+the_game.items[current_item]);
           this_item.addClass('current_item').show();
           this_item.find('.answer').show();
-        }        
+          socket.emit('next item', {"teacher":username, "item": current_item});
+        } else {
+          socket.emit('game over', {"teacher":username});
+          // !! somehow display the winner here
+        }
       });
       
+      /* communication with other users and server goes here */
       socket.on('chat message', function(msg){
         $('#messages').append($('<li>').text(msg));
       })
@@ -119,13 +126,13 @@
       .on('answer out-'+username, function(data){
         if (data.answer == $('.current_item').find('.answer').attr('data-src')){
           console.log(data.username+" answered correctly "+data.answer);
-          var correct_tally = $('#'+data.username).find('.correct').text() || 0;
+          correct_tally = $('#'+data.username).find('.correct').text() || 0;
           correct_tally++;
           $('#'+data.username).find('.correct').text(correct_tally);
           socket.emit('answer status', {'status':'correct', 'username': data.username});
         } else {
           console.log(data.username+" answered incorrectly "+data.answer);
-          var incorrect_tally = $('#'+data.username).find('.correct').text() || 0;
+          incorrect_tally = $('#'+data.username).find('.incorrect').text() || 0;
           incorrect_tally++;
           $('#'+data.username).find('.incorrect').text(incorrect_tally);
           socket.emit('answer status', {'status':'incorrect', 'username': data.username});
