@@ -185,6 +185,13 @@ io.on('connection', function(socket){
       the_html += "<div id='num_items' style='display: none' data-src='"+num_items.length+"'></div></div>";
       io.emit(game_on, {"html":the_html, "items":num_items}); // send the game to users of sending teacher
     });
+  })
+  .on('give answer', function(data){
+      console.log(data + " from line 189");
+      console.log('give answer-'+data.teacher);
+      // var teacher = 'answer out-'+data.teacher;
+      // console.log('teacher variable is '+teacher);
+      io.emit('give answer-'+data.teacher); // emit a message with the name of "give answer-teacher"
   });
 });
 

@@ -25,6 +25,7 @@
     </form>
     <a href='/logout'><button>Logout</button></a>
     <button id="reset">Reset</button>
+    <button id="next_item" style="display: none;">Next Item</button>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/jquery.cookie.js"></script>
@@ -39,6 +40,7 @@
           username = $.cookie('username'),
           teacher = 'student out-'+username,
           games_cookie = $.cookie('games').split(","),
+          the_game,
           current_game,
           current_item=0,
           game_on='game_on_'+username;
@@ -58,23 +60,41 @@
         return false;
       });
       
-      $('#games').on('click', '.game', function(event) { // need bind to find it
+      $('#games').on('click.game', '.game', function(event) {
         event.preventDefault();
         console.log($(event.target).text());
         current_game = $(event.target).text();
-        socket.emit('game on', {"teacher":username,"game":$(event.target).text()});
+        socket.emit('game on', {"teacher":username,"game":current_game});
         $('#games').html("");
         $('#switch').append($("<li><button id='switch_teacher'>End Game</button></li>"));
       });
       
-      $('#the_game').on('click', '.answer button', function(event) {
-        event.preventDefault();
-        var this_thing = $(this);
+      /* when the teacher clicks the "The Answer" button */
+      $('#the_game').on('click.answer', '.answer button', function() {
+        // event.preventDefault();
+        var this_thing = $(this),
+            parents = this_thing.parents('.answer');
         // console.log(this_thing.parents('.answer'));
-        socket.emit('give answer', {"teacher":username,"game":$(event.target).text()});
-        this_thing.parents('.answer').siblings('.choices').hide();
-        this_thing.parents('.answer').siblings('.question').hide();
-        this_thing.text(this_thing.parents('.answer').attr('data-src'));
+        socket.emit('give answer', {"teacher":username});
+        parents.siblings('.choices').hide();
+        parents.siblings('.question').hide();
+        this_thing.text(parents.attr('data-src'));
+        $('#next_item').show();
+      });
+
+      /* when the teacher clicks the next item button */
+      $('#next_item').on('click.next', function() {
+        // event.preventDefault();
+        $('#'+the_game.items[current_item]).removeClass('current_item').hide();
+        $(this).hide(); // hide the next item button
+        current_item++;
+        // console.log($('#'+the_game.items[current_item]));
+        if ($('#'+the_game.items[current_item]).length > 0) { // if not empty object (no more items)
+          console.log('hey, next item');
+          var this_item = $('#'+the_game.items[current_item]);
+          this_item.addClass('current_item').show();
+          this_item.find('.answer').show();
+        }        
       });
       
       socket.on('chat message', function(msg){
@@ -104,6 +124,7 @@
           $('#'+data.username).find('.correct').text(correct_tally);
           socket.emit('answer status', {'status':'correct', 'username': data.username});
         } else {
+          console.log(data.username+" answered incorrectly "+data.answer);
           var incorrect_tally = $('#'+data.username).find('.correct').text() || 0;
           incorrect_tally++;
           $('#'+data.username).find('.incorrect').text(incorrect_tally);
@@ -113,13 +134,14 @@
         // $('#users ul').find('#'+student).remove();
         // $('#messages').html('');
       })
-      .on(game_on, function(the_game){
+      .on(game_on, function(data){
+        the_game = data;
         console.log('game on-'+username);
         $('#the_game').html(the_game.html);
-        $('#'+the_game.items[0]).show();
-        $('#'+the_game.items[0]).find('.answer').show();
-        $('#'+the_game.items[0]).addClass('current_item');
-        current_item++;
+        $('#'+the_game.items[current_item]).show();
+        $('#'+the_game.items[current_item]).find('.answer').show();
+        $('#'+the_game.items[current_item]).addClass('current_item');
+        // current_item++;
       });
     </script>
   </body>

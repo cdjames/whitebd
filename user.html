@@ -66,6 +66,7 @@
           $('#the_game').html(the_game.html);
           $('#'+the_game.items[0]).show().addClass('current_item');
           current_item++;
+          $('#the_game').on('click.answer');
         })
         .on('reset'+current_teacher, function(){
           $('#messages').html('');
@@ -79,6 +80,7 @@
         appendTeachers();
       });
       $('#the_game').on('click.answer', '.choices button', function(event) {
+        console.log(current_teacher);
         event.preventDefault();
         var this_thing = $(this);
         $(this).parent('li').siblings().hide();
@@ -98,6 +100,13 @@
             this_thing.css('color', 'red');
           }
         })
+        .on('give answer-'+current_teacher, function(){
+          console.log('answer has been given');
+          var answer_div = this_thing.parents('.choices').siblings('.answer');
+          answer_div.find('button').text(answer_div.attr('data-src'));
+          answer_div.show();
+
+        });
         // $(this).siblings('button').hide();
       });
       socket.on('chat message', function(msg){
