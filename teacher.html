@@ -19,7 +19,7 @@
     <ul id="switch"></ul>
     <ul id="messages"></ul>
     <div id="the_game"></div>
-    <div id="users"><ul><li>users</li></ul></div>
+    <div id="users"><ul id="userlist"><li>users</li></ul></div>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -113,9 +113,14 @@
       })
       .on('student in-'+username, function(student){
         console.log(student+" logged in");
-        $('#users ul').append($("<li id='"+student+"'>"
-              +"<ul><li class='student'>"+student+"</li><li class='score'>"
-              +"<ul><li class='correct'>0</li><li class='incorrect'>0</li></ul></li></ul></li>"));
+        $('#userlist').append($(
+              "<li id='"+student+"'>"
+                +"<ul><li class='student'>"+student+"</li>"
+                    +"<li class='score'>"
+                        +"<ul><li class='correct'>0</li><li class='incorrect'>0</li></ul>"
+                    +"</li>"
+                +"</ul>"
+              +"</li>"));
         // $('#messages').html('');
       })
       .on('student out-'+username, function(student){
