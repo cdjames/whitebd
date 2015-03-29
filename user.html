@@ -103,6 +103,9 @@
         })
         .on('reset'+current_teacher, function(){
           $('#messages').html('');
+          $('#switch_teacher').trigger('click');
+          $('#the_game').html('');
+          current_teacher='';
         })
         .on('answer status-'+$.cookie('username'), function(status) {
           $('#the_game').off('click.firstanswer', '.choices button', game_click);
@@ -138,6 +141,7 @@
         .on('game over-'+current_teacher, function(){
           console.log('game over');
           console.log(correct_tally+ " correct and "+ incorrect_tally + " incorrect");
+          $('#the_game').html(correct_tally+ " correct and "+ incorrect_tally + " incorrect");
         });
       });
 

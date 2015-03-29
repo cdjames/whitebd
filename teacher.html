@@ -49,10 +49,13 @@
       // console.log("games are "+games);
       appendGames();
       
-      $('#reset').on('click', function(event) {
-        event.preventDefault();
+      $('#reset').on('click', function() {
+        // event.preventDefault();
         socket.emit('reset', username);
-        $('#m').val('').focus();
+        $('#m').val('');
+        $('#games').show();
+        $('#the_game, #userlist li:not(:first-child)').html('');
+        current_item=0;
         return false;
       });
       
@@ -67,8 +70,8 @@
         console.log($(event.target).text());
         current_game = $(event.target).text();
         socket.emit('game on', {"teacher":username,"game":current_game});
-        $('#games').html("");
-        $('#switch').append($("<li><button id='switch_teacher'>End Game</button></li>"));
+        $('#games').hide();
+        // $('#switch').append($("<li><button id='switch_teacher'>End Game</button></li>"));
       });
       
       /* when the teacher clicks the "The Answer" button */
@@ -110,6 +113,7 @@
       .on('reset'+username, function(){
         // location.reload();
         $('#messages').html('');
+
       })
       .on('student in-'+username, function(student){
         console.log(student+" logged in");
