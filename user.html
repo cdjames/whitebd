@@ -86,14 +86,15 @@
         event.preventDefault();
         // console.log($(event.target).text());
         current_teacher = $(event.target).text();
-        game_on='game_on_'+current_teacher;
+        // game_on='game_on_'+current_teacher;
         console.log('game_on = '+game_on);
         // console.log('game on-'+current_teacher);
         socket.emit('student in', {"username":$.cookie('username'),"teacher":$(event.target).text()});
         $('#teachers').html("");
         $('#switch').append($("<li><button id='switch_teacher'>Different Teacher</button></li>"));
         
-        socket.on(game_on, function(data){
+        socket.on('game_on_'+current_teacher, function(data){
+          if (current_teacher == '') {return false}; // ignore requests if game has been reset
           the_game = data;
           console.log('game on-'+current_teacher);
           $('#the_game').html(the_game.html);
