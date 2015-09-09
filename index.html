@@ -21,14 +21,24 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-      var socket = io();
+      var socket = io(),
+          message;
       $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
+        message = $('#m').val();
+        socket.emit('student text', {'message': message, 'sender': "test"}); // replace "test" w/ name
         $('#m').val('');
         return false;
       });
-      socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+      socket.on('student text', function(data){
+        if (data.sender == "test") 
+        {
+            var $message = $("<li>"+ data.message 
+                              + "<span><i> -- " + data.sender + "</i></span>" 
+                            + "</li>");
+            // $('#messages').append($('<li>').text(data.message));
+            $('#messages').append($message);
+        }
+        
       });
     </script>
   </body>
