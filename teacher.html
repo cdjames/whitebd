@@ -45,7 +45,7 @@
           var bckgrnd, width;
           count++;
           bckgrnd = (count%2!=0 ? "#eee" : "white");
-          width = data.message.length * 9.4 + 1;
+          width = data.message.length * 10 + 1;
           // width = data.message.length;
             var $message = $("<li>"+
                               "<input class='m' style='background:" + bckgrnd + "; width:"+ width +"px;'></input>" + 
@@ -60,7 +60,8 @@
       .on('teacher text', function(data){
         // if (data.sender == "test") 
         // {
-            var $message = $("<li>"+ data.message 
+          count++; // for input colors above
+            var $message = $("<li style='background:red;'>"+ data.message 
                               + "<span><i> -- " + data.sender + "</i></span>" 
                             + "</li>");
             // $('#messages').append($('<li>').text(data.message));
