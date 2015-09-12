@@ -39,9 +39,25 @@ app.get('/', function(req, res){
     //   res.cookie('login', 'null'); // set the login cookie
     //   res.redirect('/'); // make them log in
     })
+  .get('/teacher', function(req, res){ // request for example.com/user
+    // var parsedUrl = url.parse(req.url, true); // parse url param (example.com/user?param=value)
+    // // console.log("Cookies: ", req.cookies); // testing
+    // // console.log(parsedUrl.query); // testing
+    
+    // if (parsedUrl.query.name == req.cookies.username // there is a param name and it matches the cookie
+    //     && req.cookies.login == 'success'){ // and the login was successful
+      // if (req.cookies.teachers != "true") {
+        res.sendFile(__dirname + '/teacher.html'); // send the user to the page
+      // } else {
+      //   res.sendFile(__dirname + '/teacher.html'); // send the user to the page
+      // }
+      
+    // } else { // otherwise
+    //   res.cookie('login', 'null'); // set the login cookie
+    //   res.redirect('/'); // make them log in
+    })
   .get('/jquery.cookie.js', function(req, res){
-  // res.send('<h1>Hello world</h1>');
-  res.sendFile(__dirname + '/jquery.cookie.js');
+      res.sendFile(__dirname + '/jquery.cookie.js');
 });
 
 /* handle login attempts here */
@@ -49,40 +65,44 @@ app.post('/post', function(req, res){
   var teacher = req.body.username,
       student = req.body.student,
       user_file;
-  
-  fs.readFile(teacher+'.json', 'utf8', function (err, data) {
-    // console.log(err);
-    if (err) { // can't open file
-      // res.send('no_user');
-      bad_login(res, 'no_user');
-      return console.error(err); // get out of the readFile
-    }
-    // if successful
-    user_file = JSON.parse(data); // get contents of file
-    console.log("teacher is ",user_file.username.toString());
-    // console.log("user_file.teachers is ",typeof user_file.teachers);
-    if (user_file) { // user exists
-      if (user_file.password == req.body.password) { // good password
-        // cookie expires in 1 day
-        res.cookie('login', 'success', { maxAge: 86400000 })
-            .cookie('teacher', teacher, { maxAge: 86400000 })
-            .cookie('student', student, { maxAge: 86400000 });
-        console.log("user " + name + " logged in.");
-        // if (user_file.teachers != true){ // if not a teacher
-        //   res.redirect('/user?name='+teacher); // need to specify name in url param to reach page
-        // } else { // if a teacher
-        //   console.log("games are ",user_file.game_names.toString());
-        //   res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
-        //   res.redirect('/teacher?name='+teacher); // need to specify name in url param to reach page
-        // }
-        
-      } else { // wrong password
-        bad_login(res, 'bad_password');
+  if(teacher){
+    fs.readFile(teacher+'.json', 'utf8', function (err, data) {
+      // console.log(err);
+      if (err) { // can't open file
+        // res.send('no_user');
+        bad_login(res, 'no_user');
+        return console.error(err); // get out of the readFile
       }
-    } else {
-      bad_login(res, 'no_user');
-    }
-  });
+      // if successful
+      user_file = JSON.parse(data); // get contents of file
+      console.log("teacher is ",user_file.username.toString());
+      // console.log("user_file.teachers is ",typeof user_file.teachers);
+      if (user_file) { // user exists
+        if (user_file.password == req.body.password) { // good password
+          // cookie expires in 1 day
+          res.cookie('login', 'success', { maxAge: 86400000 })
+              .cookie('teacher', teacher, { maxAge: 86400000 })
+              .cookie('student', student, { maxAge: 86400000 });
+          console.log("user " + student + " logged in.");
+          if (student != user_file.teacherPass){ // if not a teacher
+            res.redirect('/student?name='+student); // need to specify name in url param to reach page
+          } else { // if a teacher
+            // console.log("games are ",user_file.game_names.toString());
+            // res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
+            res.redirect('/teacher?name='+teacher); // need to specify name in url param to reach page
+          }
+          
+        } else { // wrong password
+          bad_login(res, 'bad_password');
+        }
+      } else {
+        bad_login(res, 'no_user');
+      }
+    });
+  } else {
+    bad_login(res, 'other_error');
+  }
+  
 });
 
 io.on('connection', function(socket){
@@ -92,6 +112,9 @@ io.on('connection', function(socket){
   })
   .on('student text', function(data){
     io.emit('student text', data);
+  })
+  .on('teacher text', function(data){
+    io.emit('teacher text', data);
   });
 });
 

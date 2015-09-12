@@ -2,30 +2,39 @@
 <html>
   <head>
     <title>Whitebd Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; 
+      body { background: #000; font: 24px Helvetica, Arial;}
+      #wrapper { width: 100%; text-align: center;}
+      #title { color: white; padding: 15px 0px; letter-spacing: 24px; width: 226px; margin-left: auto;
+    margin-right: auto;}
+      form { padding: 0px 20px; 
         /*position: fixed; */
-        bottom: 0; width: 100%; }
+        /*bottom: 0; */
+        width: 100%; }
       /*form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }*/
-      form button, form p { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      form input {height: 60px; width: 97%; font-size: 1.5em; padding-left: 20px; margin-bottom: 5px;}
+      form button, form p { height: 80px; width: 97%; background: rgb(130, 224, 255); border: none; 
+      font-size: 2em; margin-top: 10px;}
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
     </style>
   </head>
   <body>
-    <div>
+    <div id="wrapper">
+      <div id="title">whitebd</div>
+      <div id="err_message"></div>
       <!-- <p><a href="/user">user</a></p> -->
       <form id="user" method="post" action="/post" enctype="application/x-www-form-urlencoded">
-        <input id="username" type="text" name="username" placeholder="teacher" autocomplete="off" />
-        <input id="password" type="text" name="password" placeholder="password" autocomplete="off" />
-        <input id="student" type="text" name="student" placeholder="your name" autocomplete="off" />
+        <input id="username" type="text" name="username" placeholder="teacher" autocomplete="off" required/>
+        <input id="password" type="text" name="password" placeholder="password" autocomplete="off" required/>
+        <input id="student" type="text" name="student" placeholder="your name" autocomplete="off" required/>
         <!-- <input type="submit"> -->
         <button>Login</button>
       </form>
-      <div id="err_message"></div>
+      
       <!-- <button>Login</button> -->
     </div>
     <!-- <div>
@@ -51,21 +60,21 @@
     // }
     $( document ).ready(function() {
       var login_cookie = $.cookie('login'),
-          user_cookie = $.cookie('username'),
+          user_cookie = $.cookie('student'),
           teacher_cookie = $.cookie('teachers'),
           err_div = $('#err_message');
       console.log("login = "+login_cookie);
-      console.log("username = "+user_cookie);
+      console.log("student = "+user_cookie);
       console.log("teachers = "+teacher_cookie);
      
       switch(login_cookie) {
         case 'success':
           // alert('welcome');
-          if (teacher_cookie != "true") {
-            window.location.replace("/student?name="+user_cookie);
-          } else {
-            window.location.replace("/teacher?name="+user_cookie);
-          }
+          // if (teacher_cookie != "true") {
+          //   window.location.replace("/student?name="+user_cookie);
+          // } else {
+          //   window.location.replace("/teacher?name="+user_cookie);
+          // }
           break;
         case 'bad_password':
           console.log('wrong password');
@@ -81,8 +90,8 @@
       }
 
       if (user_cookie != null){
-        $('#username').val(user_cookie);
-        $('#password').focus();
+        $('#student').val(user_cookie);
+        // $('#password').focus();
       } else {
         $('#username').focus();
       }
