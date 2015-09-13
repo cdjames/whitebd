@@ -5,7 +5,7 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
-      #messages {font-size: 1.2em;}
+      #messages {font-size: 1.2em; padding: 0;}
       form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
       form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
@@ -14,7 +14,7 @@
         font: 13px Helvetica, Arial;
         font-size: 1.2em;
         width: 85%;}
-      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages { list-style-type: none; margin: 0; padding-bottom: 36px; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
       /*#messages input:nth-child(odd) { background: #eee; }*/
@@ -42,10 +42,25 @@
       socket.on('student text', function(data){
         // if (data.sender == "test") 
         // {
-          var bckgrnd, width;
-          count++;
+
+          var bckgrnd, width, addLetter = 0, subtLetter = 0,
+              wideLetters = ["w", "m"],
+              thinLetters = ["i", "j", "l", "t", "f", ",", ".", "!", ":", ";"];
+
+          count++; // for deciding background color of input fields
           bckgrnd = (count%2!=0 ? "#eee" : "white");
-          width = data.message.length * 10 + 1;
+
+          width = data.message.length;
+          for (var i = 0; i < wideLetters.length; i++) {
+            addLetter += countLetter(data.message.toLowerCase(), wideLetters[i]);
+          };
+          for (var i = 0; i < thinLetters.length; i++) {
+            subtLetter += countLetter(data.message.toLowerCase(), thinLetters[i]);
+          };
+
+          width = (width + addLetter*0.6 - subtLetter*0.6) * 11.5;
+          // width = width * 10.5 + 1;
+
           // width = data.message.length;
             var $message = $("<li>"+
                               "<input class='m' style='background:" + bckgrnd + "; width:"+ width +"px;'></input>" + 
@@ -54,6 +69,7 @@
             // $('#messages').append($('<li>').text(data.message));
             $('#messages').append($message);
             $('input.m').last().val(data.message);
+            window.scrollTo(0,document.body.scrollHeight); // scrolls to bottom of page
         // }
         
       })
@@ -66,9 +82,23 @@
                             + "</li>");
             // $('#messages').append($('<li>').text(data.message));
             $('#messages').append($message);
+            window.scrollTo(0,document.body.scrollHeight); // scrolls to bottom of page
         // }
         
       });
+
+      function countLetter (str, letter) {
+        var count = 0,
+            pos = str.indexOf(letter);
+
+        while (pos !== -1) {
+          count++;
+          pos = str.indexOf(letter, pos + 1);
+        }
+
+        console.log("there are " + count + " " + letter + "'s.");
+        return count;
+      }
     </script>
   </body>
 </html>

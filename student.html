@@ -22,7 +22,7 @@
         height: 60px;
         border: medium none;
         margin: 5px;}
-      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages { list-style-type: none; margin: 0; padding-bottom: 80px; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
     </style>
@@ -59,6 +59,7 @@
                             + "</li>");
             // $('#messages').append($('<li>').text(data.message));
             $('#messages').append($message);
+            window.scrollTo(0,document.body.scrollHeight); // scrolls to bottom of page
         }
         
       });
