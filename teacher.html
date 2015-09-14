@@ -32,62 +32,72 @@
           message,
           count = 0;
 
-      $('form').submit(function(){
+      $('form').submit(function(e){
+        e.preventDefault();
         message = $('#m').val();
-        socket.emit('teacher text', {'message': message, 'sender': "teacher"}); // replace "test" w/ name
-        $('#m').val('');
-        return false;
+        socket.emit('teacher text', {'message': message, 'sender': "teacher"});
+        $('#m').val(''); // clear main input
+        return false; // get out of the function without actually doing any submission
       });
       
-      socket.on('student text', function(data){
-        // if (data.sender == "test") 
-        // {
+      /* handle teacher changes to student responses -- mostly change width of input fields*/
+      $('#messages').on('click', 'input.m', function() {
+        $(this).css('width', '90%'); // widen input to allow changes
+      })
+      .on('change', 'input.m', function() {
+        var width = computeWidth($(this).val().length, $(this).val());
+        $(this).css('width', width + 'px');
+      });
 
-          var bckgrnd, width, addLetter = 0, subtLetter = 0,
-              wideLetters = ["w", "m"],
-              thinLetters = ["i", "j", "l", "t", "f", ",", ".", "!", ":", ";"];
+      socket.on('student text', function(data){
+          var bckgrnd, width;
 
           count++; // for deciding background color of input fields
           bckgrnd = (count%2!=0 ? "#eee" : "white");
 
-          width = data.message.length;
-          for (var i = 0; i < wideLetters.length; i++) {
-            addLetter += countLetter(data.message.toLowerCase(), wideLetters[i]);
-          };
-          for (var i = 0; i < thinLetters.length; i++) {
-            subtLetter += countLetter(data.message.toLowerCase(), thinLetters[i]);
-          };
+          width = computeWidth(data.message.length, data.message);
 
-          width = (width + addLetter*0.6 - subtLetter*0.6) * 11.5;
-          // width = width * 10.5 + 1;
-
-          // width = data.message.length;
-            var $message = $("<li>"+
-                              "<input class='m' style='background:" + bckgrnd + "; width:"+ width +"px;'></input>" + 
-                              "<span><i> -- " + data.sender + "</i></span>" 
-                            + "</li>");
-            // $('#messages').append($('<li>').text(data.message));
-            $('#messages').append($message);
-            $('input.m').last().val(data.message);
-            window.scrollTo(0,document.body.scrollHeight); // scrolls to bottom of page
-        // }
+          var $message = $("<li>"+
+                            "<input class='m' style='background:" + bckgrnd + "; width:"+ width +"px;'></input>" + 
+                            "<span><i> -- " + data.sender + "</i></span>" 
+                          + "</li>");
+          // $('#messages').append($('<li>').text(data.message)); // original
+          $('#messages').append($message);
+          $('input.m').last().val(data.message);
+          scrollBottom(); // scrolls to bottom of page
         
       })
       .on('teacher text', function(data){
-        // if (data.sender == "test") 
-        // {
+
           count++; // for input colors above
-            var $message = $("<li style='background:red;'>"+ data.message 
-                              + "<span><i> -- " + data.sender + "</i></span>" 
-                            + "</li>");
-            // $('#messages').append($('<li>').text(data.message));
-            $('#messages').append($message);
-            window.scrollTo(0,document.body.scrollHeight); // scrolls to bottom of page
-        // }
+
+          var $message = $("<li style='background:red;'>"+ data.message 
+                            + "<span><i> -- " + data.sender + "</i></span>" 
+                          + "</li>");
+          // $('#messages').append($('<li>').text(data.message));
+          $('#messages').append($message);
+          scrollBottom(); // scrolls to bottom of page
         
       });
 
-      function countLetter (str, letter) {
+      function computeWidth (width, text) {
+        var addLetter = 0, subtLetter = 0,
+              wideLetters = ["w", "m"],
+              thinLetters = ["i", "j", "l", "t", "f", ",", ".", "!", ":", ";"];
+
+          // width = data.message.length;
+          for (var i = 0; i < wideLetters.length; i++) {
+            addLetter += countLetter(text.toLowerCase(), wideLetters[i]);
+          };
+          for (var i = 0; i < thinLetters.length; i++) {
+            subtLetter += countLetter(text.toLowerCase(), thinLetters[i]);
+          };
+
+          width = (width + addLetter*0.6 - subtLetter*0.6) * 11.5;
+          return width;
+      }
+
+      function countLetter (str, letter) { // support fn for computeWidth
         var count = 0,
             pos = str.indexOf(letter);
 
@@ -96,8 +106,12 @@
           pos = str.indexOf(letter, pos + 1);
         }
 
-        console.log("there are " + count + " " + letter + "'s.");
+        // console.log("there are " + count + " " + letter + "'s.");
         return count;
+      }
+
+      function scrollBottom() {
+        window.scrollTo(0,document.body.scrollHeight);
       }
     </script>
   </body>

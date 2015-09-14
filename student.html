@@ -46,7 +46,7 @@
 
       $('form').submit(function(){
         message = $('#m').val();
-        socket.emit('student text', {'message': message, 'sender': studentName}); // replace "test" w/ name
+        socket.emit('student text', {'message': message, 'sender': studentName});
         $('#m').val('');
         return false;
       });
@@ -59,10 +59,14 @@
                             + "</li>");
             // $('#messages').append($('<li>').text(data.message));
             $('#messages').append($message);
-            window.scrollTo(0,document.body.scrollHeight); // scrolls to bottom of page
+            scrollBottom(); // scrolls to bottom of page
         }
         
       });
+
+      function scrollBottom() {
+        window.scrollTo(0,document.body.scrollHeight);
+      }
     </script>
   </body>
 </html>
