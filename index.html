@@ -20,20 +20,21 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      #err_message {color: white;}
     </style>
   </head>
   <body>
     <div id="wrapper">
       <div id="title">whitebd</div>
-      <div id="err_message"></div>
       <!-- <p><a href="/user">user</a></p> -->
       <form id="user" method="post" action="/post" enctype="application/x-www-form-urlencoded">
         <input id="username" type="text" name="username" placeholder="teacher" autocomplete="off" required/>
-        <input id="password" type="text" name="password" placeholder="password" autocomplete="off" required/>
+        <input id="password" type="password" name="password" placeholder="password" autocomplete="off" required/>
         <input id="student" type="text" name="student" placeholder="your name" autocomplete="off" required/>
         <!-- <input type="submit"> -->
         <button>Login</button>
       </form>
+      <div id="err_message"></div>
       
       <!-- <button>Login</button> -->
     </div>
@@ -79,6 +80,10 @@
         case 'bad_password':
           console.log('wrong password');
           err_div.text('wrong password').fadeOut(6000);
+          break;
+        case 'bad_name':
+          console.log('wrong name');
+          err_div.text('choose a different user name').fadeOut(6000);
           break;
         case 'no_user':
           console.log('no such user');
