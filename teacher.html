@@ -36,9 +36,16 @@
       $('form').submit(function(e){
         e.preventDefault();
         message = $('#m').val();
-        socket.emit('teacher text', {'message': message, 'sender': "teacher"});
-        $('#m').val(''); // clear main input
-        return false; // get out of the function without actually doing any submission
+
+        if(message.toLowerCase() == "clear()") { 
+          $('#messages').html(''); 
+          $('#m').val('');
+        }
+        else {
+          socket.emit('teacher text', {'message': message, 'sender': "teacher"});
+          $('#m').val(''); // clear main input
+          // return false; // get out of the function without actually doing any submission -- not needed because of preventDefault()
+        }
       });
       
       /* handle teacher changes to student responses -- mostly change width of input fields*/
