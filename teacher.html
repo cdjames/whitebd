@@ -12,18 +12,21 @@
       .delete {text-align: right;}
       .m{border: none;
         font: 13px Helvetica, Arial;
-        font-size: 1.2em;
+        font-size: 1em;
         width: 85%;}
       #messages { list-style-type: none; margin: 0; padding-bottom: 36px; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      #dummyspan { visibility: hidden; }
       /*#messages input:nth-child(odd) { background: #eee; }*/
     </style>
   </head>
   <body>
     <ul id="messages"></ul>
+    <span id='dummyspan'></span>
     <form action="">
       <input id="m" autocomplete="off" required/><button>Send</button>
+      
     </form>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
@@ -31,7 +34,11 @@
     <script>
       var socket = io(),
           message,
-          count = 0;
+          count = 0,
+          ffamily = $('body').css('font-family'),
+          fsize = $('#messages').css('font-size').slice(0, -2),
+          SScolors = {},
+          usedColors = [];
 
       $('form').submit(function(e){
         e.preventDefault();
@@ -53,17 +60,22 @@
         $(this).css('width', '90%'); // widen input to allow changes
       })
       .on('focusout', 'input.m', function() {
-        var width = computeWidth($(this).val().length, $(this).val());
+        var width = getWidthOfText($(this).val(), ffamily, fsize);
         $(this).css('width', width + 'px');
       });
 
       socket.on('student text', function(data){
           var bckgrnd, width;
+          if(!SScolors[data.sender]){
+            SScolors[data.sender] = "blue"; // = getRandomColor();
+          }
+          console.log(SScolors);
+          bckgrnd = SScolors[data.sender];
 
           count++; // for deciding background color of input fields
-          bckgrnd = (count%2!=0 ? "#eee" : "white");
+          // bckgrnd = (count%2!=0 ? "#eee" : "white");
 
-          width = computeWidth(data.message.length, data.message);
+          width = getWidthOfText(data.message, ffamily, fsize);
 
           var $message = $("<li>"+
                             "<input class='m' style='background:" + bckgrnd + "; width:"+ width +"px;'></input>" + 
@@ -88,39 +100,57 @@
         
       });
 
-      function computeWidth (width, text) {
-        var addLetter = 0, subtLetter = 0,
-              wideLetters = ["w", "m"],
-              thinLetters = ["i", "j", "l", "t", "f", ",", ".", "!", ":", ";"];
+      // function computeWidth (width, text) {
+      //   var addLetter = 0, subtLetter = 0,
+      //         wideLetters = ["w", "m"],
+      //         thinLetters = ["i", "j", "l", "t", "f", ",", ".", "!", ":", ";"];
 
-          // width = data.message.length;
-          for (var i = 0; i < wideLetters.length; i++) {
-            addLetter += countLetter(text.toLowerCase(), wideLetters[i]);
-          };
-          for (var i = 0; i < thinLetters.length; i++) {
-            subtLetter += countLetter(text.toLowerCase(), thinLetters[i]);
-          };
+      //     // width = data.message.length;
+      //     for (var i = 0; i < wideLetters.length; i++) {
+      //       // addLetter += countLetter(text.toLowerCase(), wideLetters[i]);
+      //       addLetter += countLetter(text, wideLetters[i]);
+      //     };
+      //     for (var i = 0; i < thinLetters.length; i++) {
+      //       // subtLetter += countLetter(text.toLowerCase(), thinLetters[i]);
+      //       subtLetter += countLetter(text, thinLetters[i]);
+      //     };
 
-          width = (width + addLetter*0.6 - subtLetter*0.5) * 11.5;
-          return width;
-      }
+      //     width = (width + addLetter*0.6 - subtLetter*0.5) * 11.5;
+      //     return width;
+      // }
 
-      function countLetter (str, letter) { // support fn for computeWidth
-        var count = 0,
-            pos = str.indexOf(letter);
+      // function countLetter (str, letter) { // support fn for computeWidth
+      //   var count = 0,
+      //       pos = str.indexOf(letter);
 
-        while (pos !== -1) {
-          count++;
-          pos = str.indexOf(letter, pos + 1);
-        }
+      //   while (pos !== -1) {
+      //     count++;
+      //     pos = str.indexOf(letter, pos + 1);
+      //   }
 
-        // console.log("there are " + count + " " + letter + "'s.");
-        return count;
-      }
+      //   // console.log("there are " + count + " " + letter + "'s.");
+      //   return count;
+      // }
 
       function scrollBottom() {
         window.scrollTo(0,document.body.scrollHeight);
       }
+
+      function getWidthOfText(txt, fontname, fontsize){
+        // console.log($('#dummyspan').css({"font-size": fontsize+'px', "font-family": fontname}).text(txt).width());
+        var width = $('#dummyspan').css({"font-size": fontsize+'px', "font-family": fontname}).text(txt).width();
+        $('#dummyspan').text('');
+        return width+width*0.3; // it was a little too short, so add an extra 30%
+      }
+
+      function getRandomColor(){
+        // var hex;
+        // while(usedColors.indexOf(hex))
+          // hex = generate random hex value
+        // usedColors.push(hex);
+        // return hex;
+      }
+
     </script>
   </body>
 </html>
