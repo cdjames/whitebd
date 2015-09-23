@@ -38,6 +38,7 @@
           ffamily = $('body').css('font-family'),
           fsize = $('#messages').css('font-size').slice(0, -2),
           SScolors = {},
+          possColors = ["light blue", "pink", "red", "orange", "yellow"],
           usedColors = [];
 
       $('form').submit(function(e){
@@ -69,7 +70,8 @@
           if(!SScolors[data.sender]){
             SScolors[data.sender] = "blue"; // = getRandomColor();
           }
-          console.log(SScolors);
+          console.log(usedColors);
+          console.log(getRandomColor());
           bckgrnd = SScolors[data.sender];
 
           count++; // for deciding background color of input fields
@@ -100,38 +102,6 @@
         
       });
 
-      // function computeWidth (width, text) {
-      //   var addLetter = 0, subtLetter = 0,
-      //         wideLetters = ["w", "m"],
-      //         thinLetters = ["i", "j", "l", "t", "f", ",", ".", "!", ":", ";"];
-
-      //     // width = data.message.length;
-      //     for (var i = 0; i < wideLetters.length; i++) {
-      //       // addLetter += countLetter(text.toLowerCase(), wideLetters[i]);
-      //       addLetter += countLetter(text, wideLetters[i]);
-      //     };
-      //     for (var i = 0; i < thinLetters.length; i++) {
-      //       // subtLetter += countLetter(text.toLowerCase(), thinLetters[i]);
-      //       subtLetter += countLetter(text, thinLetters[i]);
-      //     };
-
-      //     width = (width + addLetter*0.6 - subtLetter*0.5) * 11.5;
-      //     return width;
-      // }
-
-      // function countLetter (str, letter) { // support fn for computeWidth
-      //   var count = 0,
-      //       pos = str.indexOf(letter);
-
-      //   while (pos !== -1) {
-      //     count++;
-      //     pos = str.indexOf(letter, pos + 1);
-      //   }
-
-      //   // console.log("there are " + count + " " + letter + "'s.");
-      //   return count;
-      // }
-
       function scrollBottom() {
         window.scrollTo(0,document.body.scrollHeight);
       }
@@ -144,11 +114,26 @@
       }
 
       function getRandomColor(){
-        // var hex;
-        // while(usedColors.indexOf(hex))
+        var hex, 
+            rand=0,
+            len = possColors.length, 
+            newFound=false;
+        // console.log(usedColors.indexOf(possColors[rand]));
+        if (usedColors.length == len) { 
+          usedColors = []; // clear the usedColors array
+        }
+
+        while(newFound==false && usedColors.length != 0){
+          // generate random number
+          rand = Math.floor((Math.random() * len));
+          // console.log(rand);
+          if(usedColors.indexOf(possColors[rand]) == -1) { newFound=true; } 
           // hex = generate random hex value
-        // usedColors.push(hex);
-        // return hex;
+        }
+        
+        console.log(rand + " was found");
+        usedColors.push(possColors[rand]);
+        return possColors[rand];
       }
 
     </script>
