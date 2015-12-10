@@ -28,8 +28,10 @@
       <input id="m" autocomplete="off" required/><button>Send</button>
       
     </form>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <!--<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>-->
+    <script src="socket.io-1.2.0.js"></script>
+    <!--<script src="http://code.jquery.com/jquery-1.11.1.js"></script>-->
+    <script src="jquery-1.8.3.min.js"></script>
     <script src="jquery.cookie.js"></script>
     <script>
       var socket = io(),
@@ -38,7 +40,7 @@
           ffamily = $('body').css('font-family'),
           fsize = $('#messages').css('font-size').slice(0, -2),
           SScolors = {},
-          possColors = ["light blue", "pink", "red", "orange", "yellow"],
+          possColors = ["blue", "pink", "red", "orange", "yellow"],
           usedColors = [];
 
       $('form').submit(function(e){
@@ -67,15 +69,18 @@
 
       socket.on('student text', function(data){
           var bckgrnd, width;
+          // console.log(SScolors[data.sender]);
+          // if(SScolors[data.sender] === undefined){
           if(!SScolors[data.sender]){
-            SScolors[data.sender] = "blue"; // = getRandomColor();
+            // SScolors[data.sender] = "blue"; // = getRandomColor();
+            getRandomColor(data.sender);
           }
-          console.log(usedColors);
-          console.log(getRandomColor());
+          // console.log(usedColors);
+          // console.log(getRandomColor());
           bckgrnd = SScolors[data.sender];
-
+          // console.log("background is "+bckgrnd);
           count++; // for deciding background color of input fields
-          // bckgrnd = (count%2!=0 ? "#eee" : "white");
+          bckgrnd = (count%2!=0 ? "#eee" : "white");
 
           width = getWidthOfText(data.message, ffamily, fsize);
 
@@ -113,7 +118,7 @@
         return width+width*0.3; // it was a little too short, so add an extra 30%
       }
 
-      function getRandomColor(){
+      function getRandomColor(user){
         var hex, 
             rand=0,
             len = possColors.length, 
@@ -124,16 +129,19 @@
         }
 
         while(newFound==false && usedColors.length != 0){
-          // generate random number
+          // generate random number between 0 and length of possColors array
           rand = Math.floor((Math.random() * len));
           // console.log(rand);
+          // if the color isn't in the usedColors array, then use it
           if(usedColors.indexOf(possColors[rand]) == -1) { newFound=true; } 
           // hex = generate random hex value
         }
         
         console.log(rand + " was found");
         usedColors.push(possColors[rand]);
-        return possColors[rand];
+        SScolors[user] = possColors[rand];
+        console.log(SScolors[user]);
+        // return possColors[rand];
       }
 
     </script>

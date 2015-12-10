@@ -64,7 +64,13 @@ app.get('/', function(req, res){
     //   res.redirect('/'); // make them log in
     })
   .get('/jquery.cookie.js', function(req, res){
-      res.sendFile(__dirname + '/jquery.cookie.js');
+      res.sendFile(__dirname + '/jquery.cookie.js')
+    })
+  .get('/socket.io-1.2.0.js', function(req, res){
+      res.sendFile(__dirname + '/socket.io-1.2.0.js')
+    })
+  .get('/jquery-1.8.3.min.js', function(req, res){
+      res.sendFile(__dirname + '/jquery-1.8.3.min.js')
 });
 
 /* handle login attempts here */
