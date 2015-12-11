@@ -71,6 +71,15 @@ app.get('/', function(req, res){
     })
   .get('/jquery-1.8.3.min.js', function(req, res){
       res.sendFile(__dirname + '/jquery-1.8.3.min.js')
+    })
+  .get('/signin.js', function(req, res){
+      res.sendFile(__dirname + '/signin.js')
+    })
+  .get('/teacher.js', function(req, res){
+      res.sendFile(__dirname + '/teacher.js')
+    })
+  .get('/student.js', function(req, res){
+      res.sendFile(__dirname + '/student.js')
 });
 
 /* handle login attempts here */
