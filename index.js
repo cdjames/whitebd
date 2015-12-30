@@ -17,51 +17,16 @@ var fs = require('fs'); // needed to read files
 var url = require('url');
 
 
-
-app.get('/', function(req, res){
-  // res.send('<h1>Hello world</h1>');
-  res.sendFile(__dirname + '/index.html');
-})
+/* handle all get requests */
+app
+  .get('/', function(req, res){
+    res.sendFile(__dirname + '/index.html');
+    })
   .get('/student', function(req, res){ // request for example.com/user
     checkLogin(req, res);
-    // var parsedUrl = url.parse(req.url, true); // parse url param (example.com/user?param=value)
-    // // console.log("Cookies: ", req.cookies); // testing
-    // // console.log(parsedUrl.query); // testing
-    
-    // if (parsedUrl.query.name == req.cookies.username // there is a param name and it matches the cookie
-    //     && req.cookies.login == 'success'){ // and the login was successful
-      // if (req.cookies.teachers != "true") {
-        // res.sendFile(__dirname + '/student.html'); // send the user to the page
-      // } else {
-      //   res.sendFile(__dirname + '/teacher.html'); // send the user to the page
-      // }
-      
-    // } else { // otherwise
-    //   res.cookie('login', 'null'); // set the login cookie
-    //   res.redirect('/'); // make them log in
     })
   .get('/teacher', function(req, res){ // request for example.com/user
-      // if(checkLogin(req, res)) {
-      //   res.sendFile(__dirname + '/teacher.html'); // send the user to the page
-      // } else {
-
-      // }
-      checkLogin(req, res);
-    // var parsedUrl = url.parse(req.url, true); // parse url param (example.com/user?param=value)
-    // // console.log("Cookies: ", req.cookies); // testing
-    // // console.log(parsedUrl.query); // testing
-    
-    // if (parsedUrl.query.name == req.cookies.username // there is a param name and it matches the cookie
-    //     && req.cookies.login == 'success'){ // and the login was successful
-      // if (req.cookies.teachers != "true") {
-        
-      // } else {
-      //   res.sendFile(__dirname + '/teacher.html'); // send the user to the page
-      // }
-      
-    // } else { // otherwise
-    //   res.cookie('login', 'null'); // set the login cookie
-    //   res.redirect('/'); // make them log in
+    checkLogin(req, res)
     })
   .get('/jquery.cookie.js', function(req, res){
       res.sendFile(__dirname + '/include/jquery.cookie.js')
@@ -82,7 +47,7 @@ app.get('/', function(req, res){
       res.sendFile(__dirname + '/app/student.js')
 });
 
-/* handle login attempts here */
+/* handle post requests (login attempts) here */
 app.post('/post', function(req, res){
   var teacher = req.body.username,
       student = req.body.student,
