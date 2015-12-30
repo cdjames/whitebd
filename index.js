@@ -10,9 +10,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 app.use(cookieParser());
-// app.use(express.urlencoded()); // to support URL-encoded bodies
-// var domain = require('domain');
-// var d = domain.create();
 var fs = require('fs'); // needed to read files
 var url = require('url');
 
