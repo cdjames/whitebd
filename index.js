@@ -64,22 +64,22 @@ app.get('/', function(req, res){
     //   res.redirect('/'); // make them log in
     })
   .get('/jquery.cookie.js', function(req, res){
-      res.sendFile(__dirname + '/jquery.cookie.js')
+      res.sendFile(__dirname + '/include/jquery.cookie.js')
     })
   .get('/socket.io-1.2.0.js', function(req, res){
-      res.sendFile(__dirname + '/socket.io-1.2.0.js')
+      res.sendFile(__dirname + '/include/socket.io-1.2.0.js')
     })
   .get('/jquery-1.8.3.min.js', function(req, res){
-      res.sendFile(__dirname + '/jquery-1.8.3.min.js')
+      res.sendFile(__dirname + '/include/jquery-1.8.3.min.js')
     })
   .get('/signin.js', function(req, res){
-      res.sendFile(__dirname + '/signin.js')
+      res.sendFile(__dirname + '/app/signin.js')
     })
   .get('/teacher.js', function(req, res){
-      res.sendFile(__dirname + '/teacher.js')
+      res.sendFile(__dirname + '/app/teacher.js')
     })
   .get('/student.js', function(req, res){
-      res.sendFile(__dirname + '/student.js')
+      res.sendFile(__dirname + '/app/student.js')
 });
 
 /* handle login attempts here */
@@ -88,7 +88,7 @@ app.post('/post', function(req, res){
       student = req.body.student,
       user_file;
   if(teacher){
-    fs.readFile(teacher+'.json', 'utf8', function (err, data) {
+    fs.readFile('json/'+teacher+'.json', 'utf8', function (err, data) {
       // console.log(err);
       if (err) { // can't open file
         // res.send('no_user');
@@ -130,6 +130,7 @@ app.post('/post', function(req, res){
   
 });
 
+/* handle sockets */
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('disconnect', function(){
@@ -143,10 +144,12 @@ io.on('connection', function(socket){
   });
 });
 
+/* start the server */
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
+/* login handler functions */
 function bad_login (res, msg) {
   res.cookie('login', msg, { maxAge: 300000 });
   console.log(msg);
