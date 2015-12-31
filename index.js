@@ -69,9 +69,22 @@ app.post('/post', function(req, res){
               .cookie('student', student, { maxAge: 86400000 });
           console.log("user " + student + " logged in.");
           if (student != user_file.teacherPass){ // if not a teacher
+            /* ideas for implementing teacher check (check whether teacher is logged in) */
+            /* if fs.access('/json/teacherLoggedIn', fs.F_OK, function (err)
+              {
+                if err
+                  bad_login()
+                else
+                  do stuff below
+              })*/
             res.clearCookie('isTeacher');
             res.redirect('/student?name='+student); // need to specify name in url param to reach page
           } else { // if a teacher
+            /* ideas for implementing teacher check (check whether teacher is logged in)*/
+            /* if fs.access (see above)
+                  if error
+                    create file /json/teacherLoggedIn
+                  else do nothing*/
             res.cookie('isTeacher', 'true', { maxAge: 86400000 });
             // console.log("games are ",user_file.game_names.toString());
             // res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
@@ -119,23 +132,24 @@ function bad_login (res, msg) {
 }
 
 function checkLogin(req, res) {
-    var parsedUrl = url.parse(req.url, true); // parse url param (example.com/user?param=value)
-    // console.log("Line 141 Cookies: ", req.cookies); // testing
-    // console.log(parsedUrl.query); // testing
-    
-    if ((parsedUrl.query.name == req.cookies.student // there is a param name and it matches the cookie
-        || parsedUrl.query.name == req.cookies.teacher)
-        && req.cookies.login == 'success'){ // and the login was successful
-      // console.log("line 148 passed first if");
-      if (req.cookies.isTeacher == "true") {
-        // console.log("line 150 passed 2nd if");
-        res.sendFile(__dirname + '/teacher.html'); // send the user to the page
-        return;
-      } else {
-        res.sendFile(__dirname + '/student.html'); // send the user to the page
-      }   
-    } else { // otherwise
-      res.cookie('login', 'null'); // set the login cookie
-      res.redirect('/'); // make them log in
-    }
+  var parsedUrl = url.parse(req.url, true); // parse url param (example.com/user?param=value)
+  // console.log("Line 141 Cookies: ", req.cookies); // testing
+  // console.log(parsedUrl.query); // testing
+  
+  if ((parsedUrl.query.name == req.cookies.student // there is a param name and it matches the cookie
+      || parsedUrl.query.name == req.cookies.teacher)
+      && req.cookies.login == 'success') // and the login was successful
+  { 
+    // console.log("line 148 passed first if");
+    if (req.cookies.isTeacher == "true") {
+      // console.log("line 150 passed 2nd if");
+      res.sendFile(__dirname + '/teacher.html'); // send the user to the page
+      return;
+    } else {
+      res.sendFile(__dirname + '/student.html'); // send the user to the page
+    }   
+  } else { // otherwise
+    res.cookie('login', 'null'); // set the login cookie
+    res.redirect('/'); // make them log in
+  }
 }
