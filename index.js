@@ -47,58 +47,75 @@ app
 /* handle post requests (login attempts) here */
 app.post('/post', function(req, res){
   var teacher = req.body.username,
-      student = req.body.student,
-      user_file;
+      student = req.body.student;
   if(teacher){
-    fs.readFile('json/'+teacher+'.json', 'utf8', function (err, data) {
-      // console.log(err);
-      if (err) { // can't open file
-        // res.send('no_user');
-        bad_login(res, 'no_user');
-        return console.error(err); // get out of the readFile
-      }
-      // if successful
-      user_file = JSON.parse(data); // get contents of file
-      console.log("teacher is ",user_file.username.toString());
-      // console.log("user_file.teachers is ",typeof user_file.teachers);
-      if (user_file) { // user exists
-        if (user_file.password == req.body.password && teacher != student) { // good password & not same name as teacher
-          // cookie expires in 1 day
-          res.cookie('login', 'success', { maxAge: 86400000 })
-              .cookie('teacher', teacher, { maxAge: 86400000 })
-              .cookie('student', student, { maxAge: 86400000 });
-          console.log("user " + student + " logged in.");
-          if (student != user_file.teacherPass){ // if not a teacher
-            /* ideas for implementing teacher check (check whether teacher is logged in) */
-            /* if fs.access('/json/teacherLoggedIn', fs.F_OK, function (err)
-              {
-                if err
-                  bad_login()
-                else
-                  do stuff below
-              })*/
+    var user_file = JSON.parse(fs.readFileSync('json/'+teacher+'.json', 'utf8'));
+    // fs.readFile('json/'+teacher+'.json', 'utf8', function (err, data) {
+    //   // console.log(err);
+    //   if (err) { // can't open file
+    //     // res.send('no_user');
+    //     bad_login(res, 'no_user');
+    //     return console.error(err); // get out of the readFile
+    //   }
+    //   else { 
+    //     // console.log(JSON.parse(data));
+    //     user_file = JSON.parse(data); 
+    //   }
+    // });
+    // if successful
+    console.log(user_file);
+    // console.log("teacher is ",user_file.username.toString());
+    // console.log("user_file.teachers is ",typeof user_file.teachers);
+    if (user_file) { // user exists
+      if (user_file.password == req.body.password && teacher != student) { // good password & not same name as teacher
+        // cookie expires in 1 day
+        res.cookie('login', 'success', { maxAge: 86400000 })
+            .cookie('teacher', teacher, { maxAge: 86400000 })
+            .cookie('student', student, { maxAge: 86400000 });
+
+        /* ideas for implementing teacher check (check whether teacher is logged in) */
+        var isLoggedIn = fs.readFileSync('users/'+teacher+'.txt', 'utf8');
+        // var isLoggedIn = fs.readFile('users/'+teacher+'.txt', 'utf8', function (err, data) {
+        //   if (err) { // can't open file
+        //     bad_login(res, 'no_teacher');
+        //     return console.error(err); // get out of the readFile
+        //   } else {
+        //     console.log(data);
+        //   }
+        // });
+        if (student != user_file.teacherPass){ // if not a teacher
+          // console.log("isLoggedIn = " + isLoggedIn);
+          // console.log(typeof isLoggedIn);
+          if (isLoggedIn === "true") { // teacher is logged in
+            console.log("user " + student + " logged in.");
             res.clearCookie('isTeacher');
             res.redirect('/student?name='+student); // need to specify name in url param to reach page
-          } else { // if a teacher
-            /* ideas for implementing teacher check (check whether teacher is logged in)*/
-            /* if fs.access (see above)
-                  if error
-                    create file /json/teacherLoggedIn
-                  else do nothing*/
-            res.cookie('isTeacher', 'true', { maxAge: 86400000 });
-            // console.log("games are ",user_file.game_names.toString());
-            // res.cookie('games', user_file.game_names.toString(),{ maxAge: 86400000 });
-            res.redirect('/teacher?name='+teacher); // need to specify name in url param to reach page
           }
-          
-        } else { // wrong password or bad name
-          if(teacher == student){bad_login(res, 'bad_name');}
-          else {bad_login(res, 'bad_password');}
+          else { // teacher is not logged in
+            bad_login(res, 'teacher_not_logged');
+            return console.error("teacher not logged in"); // get out of the readFile
+          }
         }
-      } else {
-        bad_login(res, 'no_user');
+        else { // if a teacher
+          if (isLoggedIn === "false") {
+            console.log("it worked");
+          // { // teacher is not logged in
+            fs.writeFileSync('users/'+teacher+'.txt', 'true', 'utf8');
+            // fs.writeFile('users/'+teacher+'.txt', 'true', 'utf8', function (err) {
+            //   if (err) return console.error(err); // get out of the readFile
+            // });
+          }
+          res.cookie('isTeacher', 'true', { maxAge: 86400000 });
+          res.redirect('/teacher?name='+teacher); // need to specify name in url param to reach page
+        }
+          
+      } else { // wrong password or bad name
+        if (teacher == student) bad_login(res, 'bad_name');
+        else bad_login(res, 'bad_password');
       }
-    });
+    } else {
+      bad_login(res, 'no_user');
+    }
   } else {
     bad_login(res, 'other_error');
   }

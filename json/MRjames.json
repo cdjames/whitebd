@@ -2,5 +2,6 @@
 	"username": "MRjames",
 	"password": "iloveenglish",
 	"teacherPass": "Noreaver1",
-	"classes": [2420]
+	"classes": [2420],
+	"isLoggedIn": false
 }
