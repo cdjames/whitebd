@@ -37,6 +37,10 @@ $( document ).ready(function() {
       console.log('no such user');
       err_div.text('no such user').fadeOut(6000);
       break;
+    case 'teacher_not_logged':
+      console.log('teacher_not_logged');
+      err_div.text('your teacher is not logged in').fadeOut(6000);
+      break;
     default:
       console.log('please sign in');
       err_div.text('please sign in').fadeOut(6000);
