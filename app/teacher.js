@@ -45,7 +45,7 @@ $( document ).ready(function() {
       bckgrnd = SScolors[data.sender];
       // console.log("background is "+bckgrnd);
       count++; // for deciding background color of input fields
-      bckgrnd = (count%2!=0 ? "#eee" : "white");
+      bckgrnd = (count%2 !=0 ? "#ddd" : "white");
 
       width = getWidthOfText(data.message, ffamily, fsize);
 
@@ -63,7 +63,7 @@ $( document ).ready(function() {
 
       count++; // for input colors above
 
-      var $message = $("<li style='background:red;'>"+ data.message 
+      var $message = $("<li style='background:red; color:white;'>"+ data.message 
                         + "<span><i> -- " + data.sender + "</i></span>" 
                       + "</li>");
       // $('#messages').append($('<li>').text(data.message));
