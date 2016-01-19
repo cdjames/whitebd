@@ -31,6 +31,18 @@ $( document ).ready(function() {
         scrollBottom(); // scrolls to bottom of page
     }
     
+  })
+  .on('teacher text', function(data){
+
+      // count++; // for input colors above
+
+      var $message = $("<li style='background:red; color:white;'>"+ data.message 
+                        + "<span><i> -- " + data.sender + "</i></span>" 
+                      + "</li>");
+      // $('#messages').append($('<li>').text(data.message));
+      $('#messages').append($message);
+      scrollBottom(); // scrolls to bottom of page
+    
   });
 
 
