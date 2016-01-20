@@ -23,8 +23,9 @@ $( document ).ready(function() {
   socket.on('student text', function(data){
     if (data.sender == studentName) 
     {
-        var $message = $("<li>"+ data.message 
-                          + "<span><i> -- " + data.sender + "</i></span>" 
+        var $message = $("<li>" 
+                          + "<span style='margin-right: 10px; font-size: 70%;'><i>" + data.sender + ":</i></span>" 
+                          + data.message
                         + "</li>");
         // $('#messages').append($('<li>').text(data.message));
         $('#messages').append($message);
@@ -36,7 +37,8 @@ $( document ).ready(function() {
 
       // count++; // for input colors above
 
-      var $message = $("<li style='background:red; color:white;'>"+ data.message 
+      var $message = $("<li style='background:red; color:white;'>"
+                        + data.message 
                         + "<span><i> -- " + data.sender + "</i></span>" 
                       + "</li>");
       // $('#messages').append($('<li>').text(data.message));

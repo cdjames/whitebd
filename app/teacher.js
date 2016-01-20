@@ -49,9 +49,9 @@ $( document ).ready(function() {
 
       width = getWidthOfText(data.message, ffamily, fsize);
 
-      var $message = $("<li>"+
-                        "<input class='m' style='background:" + bckgrnd + "; width:"+ width +"px;'></input>" + 
-                        "<span><i> -- " + data.sender + "</i></span>" 
+      var $message = $("<li>"
+                        + "<span style='margin-right: 10px; font-size: 70%;'><i>" + data.sender + ":</i></span>"
+                        + "<input class='m' style='background:" + bckgrnd + "; width:"+ width +"px;'></input>"
                       + "</li>");
       // $('#messages').append($('<li>').text(data.message)); // original
       $('#messages').append($message);
@@ -79,9 +79,11 @@ $( document ).ready(function() {
 
   function getWidthOfText(txt, fontname, fontsize){
     // console.log($('#dummyspan').css({"font-size": fontsize+'px', "font-family": fontname}).text(txt).width());
+    /* an invisible span on which to work */
     var width = $('#dummyspan').css({"font-size": fontsize+'px', "font-family": fontname}).text(txt).width();
     $('#dummyspan').text('');
-    return width+width*0.3; // it was a little too short, so add an extra 30%
+    // return width+width*0.3; // it was a little too short, so add an extra 30%
+    return width + 10; // this seems to work fine right now
   }
 
   function getRandomColor(user){
